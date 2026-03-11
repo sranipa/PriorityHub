@@ -15,7 +15,7 @@ struct ForgotPasswordView: View {
     var body: some View {
         VStack(spacing:20){
             VStack(alignment: .leading) {
-                TextField("Email",text: $viewModel.email)
+                TextField("EMAIL",text: $viewModel.email)
                     .textFieldStyle(.roundedBorder)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
@@ -35,7 +35,7 @@ struct ForgotPasswordView: View {
             Button(action:{
                 viewModel.resetPassword()
             },label: {
-                Text("Reset Password")
+                Text("RESET_PASSWORD")
                     .frame(maxWidth: .infinity)
             })
             .buttonStyle(.borderedProminent)
@@ -44,7 +44,7 @@ struct ForgotPasswordView: View {
             Spacer()
         }
         .padding()
-        .navigationTitle("Forgot Password")
+        .navigationTitle("FORGOT_PASSWORD")
         .contentShape(Rectangle())
         .onTapGesture {
             focusedField = nil

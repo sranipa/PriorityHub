@@ -15,7 +15,7 @@ struct LoginView: View {
     var body: some View {
         NavigationStack(path:$viewModel.path) {
             VStack(spacing:20) {
-                Text("Login")
+                Text("LOGIN")
                     .font(.title)
                 
                 viewForEmail
@@ -23,17 +23,17 @@ struct LoginView: View {
                 viewForPassword
                 
                 Button(action : {
-                    viewModel.login()
+                    userLogin()
                 }, label: {
-                    Text("Login")
+                    Text("LOGIN")
                         .frame(maxWidth: .infinity)
                 })
                 .buttonStyle(.borderedProminent)
-                .accessibilityLabel("Login to your account")
+                .accessibilityLabel("LOGIN_TO_YOUR_ACCOUNT")
                 .disabled(!viewModel.isFormValid)
                  
                 NavigationLink(value: LoginRoute.forgotpassword) {
-                    Text("Forgot Password?")
+                    Text("FORGOT_PASSWORD?")
                 }
                 
                 Spacer()
@@ -59,7 +59,7 @@ struct LoginView: View {
     }
     private var viewForEmail : some View {
         VStack(alignment: .leading) {
-            TextField("Email", text: $viewModel.email)
+            TextField("EMAIL", text: $viewModel.email)
                 .textFieldStyle(.roundedBorder)
                 .textInputAutocapitalization(.never)
                 .keyboardType(.emailAddress)
@@ -77,12 +77,14 @@ struct LoginView: View {
     }
     private var viewForPassword : some View {
         VStack(alignment: .leading) {
-            SecureField("Password", text: $viewModel.password)
+            SecureField("PASSWORD", text: $viewModel.password)
                 .textFieldStyle(.roundedBorder)
                 .autocorrectionDisabled()
                 .focused($focusedField, equals: .password)
                 .submitLabel(.go)
-                .onSubmit { viewModel.login() }
+                .onSubmit {
+                    userLogin()
+                }
             
             if let errorMessage = viewModel.passwordErrorMessage {
                 Text(errorMessage)
@@ -93,11 +95,17 @@ struct LoginView: View {
     }
     private var viewForRegistration : some View {
         HStack(spacing:5){
-            Text("Don't have an account?")
+            Text("DONT_HAVE_AN_ACCOUNT")
             
             NavigationLink(value: LoginRoute.registration) {
-                Text("Register Here")
+                Text("REGISTER_HERE")
             }
+        }
+    }
+    func userLogin(){
+        focusedField = .none
+        Task {
+            await viewModel.login()
         }
     }
 }

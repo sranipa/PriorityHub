@@ -1,7 +1,323 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "ALERT!" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alert!"
+          }
+        }
+      }
+    },
+    "AN_ACCOUNT_ALREADY_EXITS_WITH_THIS_EMAIL" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An account already exists with this email."
+          }
+        }
+      }
+    },
+    "AN_UNEXPECTED_ERROR_OCCURED %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An Unexpected error occured :"
+          }
+        }
+      }
+    },
+    "CONFIRM_PASSWORD" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirm Password"
+          }
+        }
+      }
+    },
+    "DONT_HAVE_AN_ACCOUNT" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Don’t have an account"
+          }
+        }
+      }
+    },
+    "EMAIL" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Email"
+          }
+        }
+      }
+    },
+    "EMAIL_IS_NOT_VERIFIED_PLEASE_VERIFY_YOUR_EMAIL_FIRST" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Email is not verified. Please verify your email first."
+          }
+        }
+      }
+    },
+    "EMAIL_OR_PASSWORD_ARE_INVALID" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Email or Password are invalid."
+          }
+        }
+      }
+    },
+    "FIRST_NAME" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "First Name"
+          }
+        }
+      }
+    },
+    "FORGOT_PASSWORD" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forgot Password"
+          }
+        }
+      }
+    },
+    "FORGOT_PASSWORD?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forgot Password?"
+          }
+        }
+      }
+    },
+    "Hello, Welcome to HomeView!" : {
 
+    },
+    "INCORRECT_PASSWORD_PLEASE_TRY_AGAIN" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Incorrect password. Please try again."
+          }
+        }
+      }
+    },
+    "LAST_NAME" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last Name"
+          }
+        }
+      }
+    },
+    "LOGIN" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Login"
+          }
+        }
+      }
+    },
+    "LOGIN_TO_YOUR_ACCOUNT" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Login to your account"
+          }
+        }
+      }
+    },
+    "NETWORK_ERROR_PLEASE_CHECK_YOUR_CONNECTION" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Network error. Please check your connection."
+          }
+        }
+      }
+    },
+    "NO_ACCOUNT_FOUND_WITH_THIS_EMAIL" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No account found with this email."
+          }
+        }
+      }
+    },
+    "OK" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ok"
+          }
+        }
+      }
+    },
+    "PASSWORD" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Password"
+          }
+        }
+      }
+    },
+    "PASSWORD_MUST_BE_AT_LEAST_6_CHARACTERS" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Password must be at least 6 characters."
+          }
+        }
+      }
+    },
+    "PASSWORDS_DO_NOT_MATCH" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Password do not match."
+          }
+        }
+      }
+    },
+    "PLEASE_ENTER_VALID_EMAIL" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please enter valid email."
+          }
+        }
+      }
+    },
+    "PLEASE_WAIT..." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please wait…"
+          }
+        }
+      }
+    },
+    "REGISTER" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Register"
+          }
+        }
+      }
+    },
+    "REGISTER_HERE" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Register Here"
+          }
+        }
+      }
+    },
+    "RESET_PASSWORD" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset Password"
+          }
+        }
+      }
+    },
+    "SUBMIT" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Submit"
+          }
+        }
+      }
+    },
+    "SUCCESS" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Success!"
+          }
+        }
+      }
+    },
+    "THANKS_FOR_REGISTERING_ACCOUNT" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thanks for registering account on PriorityHub! We will send verification email shortly. Please check your email."
+          }
+        }
+      }
+    },
+    "THE_EMAIL_ADDRESS_IS_INVALID" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The email address is invalid"
+          }
+        }
+      }
+    }
   },
   "version" : "1.1"
 }

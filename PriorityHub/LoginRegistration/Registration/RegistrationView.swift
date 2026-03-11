@@ -29,7 +29,7 @@ struct RegistrationView: View {
             }
             .padding()
         }
-        .navigationTitle("Register")
+        .navigationTitle("REGISTER")
         .contentShape(Rectangle())
         .onTapGesture {
             focusedField = nil
@@ -40,7 +40,7 @@ struct RegistrationView: View {
         }
     }
     private var firstNameView : some View {
-        TextField("FirstName", text: $viewModel.firstName)
+        TextField("FIRST_NAME", text: $viewModel.firstName)
             .textFieldStyle(.roundedBorder)
             .autocorrectionDisabled()
             .textInputAutocapitalization(.words)
@@ -49,7 +49,7 @@ struct RegistrationView: View {
             .onSubmit { focusedField = .lastName }
     }
     private var lastNameView : some View {
-        TextField("LastName", text: $viewModel.lastName)
+        TextField("LAST_NAME", text: $viewModel.lastName)
             .textFieldStyle(.roundedBorder)
             .autocorrectionDisabled()
             .textInputAutocapitalization(.words)
@@ -59,7 +59,7 @@ struct RegistrationView: View {
     }
     private var emailView : some View {
         VStack(alignment: .leading) {
-            TextField("Email",text: $viewModel.email)
+            TextField("EMAIL",text: $viewModel.email)
                 .textFieldStyle(.roundedBorder)
                 .autocorrectionDisabled()
                 .textInputAutocapitalization(.none)
@@ -78,7 +78,7 @@ struct RegistrationView: View {
     
     private var passwordView : some View {
         VStack(alignment: .leading) {
-            SecureField("Password", text: $viewModel.password)
+            SecureField("PASSWORD", text: $viewModel.password)
                 .textFieldStyle(.roundedBorder)
                 .autocorrectionDisabled()
                 .textInputAutocapitalization(.none)
@@ -95,7 +95,7 @@ struct RegistrationView: View {
     }
     private var confirmPasswordView : some View {
         VStack(alignment: .leading) {
-            SecureField("ConfirmPassword", text: $viewModel.confirmPassword)
+            SecureField("CONFIRM_PASSWORD", text: $viewModel.confirmPassword)
                 .textFieldStyle(.roundedBorder)
                 .autocorrectionDisabled()
                 .textInputAutocapitalization(.none)
@@ -112,9 +112,12 @@ struct RegistrationView: View {
     }
     private var submitButtonView : some View {
         Button(action: {
-            viewModel.registerUser()
+            focusedField = nil
+            Task {
+                await viewModel.registerUser()
+            }
         }, label: {
-            Text("Submit")
+            Text("SUBMIT")
                 .frame(maxWidth: .infinity)
         })
         .buttonStyle(.borderedProminent)

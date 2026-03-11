@@ -29,7 +29,7 @@ class ForgotPasswordViewModel {
         email.contains(".")
     }
     var emailErrorMessage : String? {
-        email.isEmpty || (email.contains("@") && email.contains(".")) ? nil : "Please enter a valid email."
+        email.isEmpty || (email.contains("@") && email.contains(".")) ? nil : String(localized: "PLEASE_ENTER_VALID_EMAIL")
     }
     
     // MARK: -

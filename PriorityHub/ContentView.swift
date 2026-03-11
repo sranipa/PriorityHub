@@ -8,8 +8,13 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(GlobalObject.self) private var globalObject
     var body: some View {
-       LoginView()
+        if globalObject.isUserLoggedIn {
+            HomeView()
+        } else {
+            LoginView()
+        }
     }
 }
 

@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import FirebaseAuth
 
 @Observable
 class ForgotPasswordViewModel {
@@ -32,14 +33,25 @@ class ForgotPasswordViewModel {
         email.isEmpty || (email.contains("@") && email.contains(".")) ? nil : String(localized: "PLEASE_ENTER_VALID_EMAIL")
     }
     
+    var resetLinkSent : Bool = false
+    
     // MARK: -
     // MARK: - API Call
-    func resetPassword() {
+    func resetPassword() async {
         if isValidEmail {
-            loginViewModel.path.removeAll()
-            print("Reset Password Called")
+            AlertManager.shared.isShowGlobalLoading = true
+            do {
+                try await Auth.auth().sendPasswordReset(withEmail: email)
+                resetLinkSent = true
+                AlertManager.shared.isShowGlobalLoading = false
+            } catch {
+                AlertManager.shared.showAlert(title: String(localized: "ALERT!"), message: loginViewModel.authError(error: error))
+            }
         } else {
             
         }
+    }
+    func redirectToLoginPage(){
+        loginViewModel.path.removeAll()
     }
 }

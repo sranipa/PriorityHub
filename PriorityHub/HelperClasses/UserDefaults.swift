@@ -19,11 +19,3 @@ func setIsFirstTimeLaunchedApp (status : Bool) {
 func getIsFirstTimeLaunchedApp() -> Bool {
     return UserDefaults.standard.bool(forKey: PREFERENCE_KEY.isFirstTimeLaunchedApp)
 }
-//MARK: - set user loghedIn status
-func setUserLoggedinStatus(status : Bool) {
-    UserDefaults.standard.set(status, forKey: PREFERENCE_KEY.isUserLoggedIn)
-    UserDefaults.standard.synchronize()
-}
-func getUserLoggedinStatus() -> Bool {
-    return UserDefaults.standard.bool(forKey: PREFERENCE_KEY.isUserLoggedIn)
-}

@@ -149,6 +149,16 @@
         }
       }
     },
+    "LOGIN_HERE" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Login Here"
+          }
+        }
+      }
+    },
     "LOGIN_TO_YOUR_ACCOUNT" : {
       "localizations" : {
         "en" : {
@@ -271,6 +281,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Reset Password"
+          }
+        }
+      }
+    },
+    "RESET_PASSWORD_LINK_HAS_BEEN_SENT_ON_YOUR_EMAIL" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset Password link has been sent on you email."
           }
         }
       }

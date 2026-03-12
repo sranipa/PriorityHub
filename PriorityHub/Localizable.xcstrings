@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Add Task" : {
+
+    },
     "ALERT!" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -42,6 +45,9 @@
           }
         }
       }
+    },
+    "Dashboard View" : {
+
     },
     "DONT_HAVE_AN_ACCOUNT" : {
       "localizations" : {
@@ -115,8 +121,15 @@
         }
       }
     },
-    "Hello, Welcome to HomeView!" : {
-
+    "HOME" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Home"
+          }
+        }
+      }
     },
     "INCORRECT_PASSWORD_PLEASE_TRY_AGAIN" : {
       "extractionState" : "manual",
@@ -128,6 +141,19 @@
           }
         }
       }
+    },
+    "INSIGHTS" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Insights"
+          }
+        }
+      }
+    },
+    "Insights View" : {
+
     },
     "LAST_NAME" : {
       "localizations" : {
@@ -255,6 +281,19 @@
         }
       }
     },
+    "PROFILE" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profile"
+          }
+        }
+      }
+    },
+    "Profile View" : {
+
+    },
     "REGISTER" : {
       "localizations" : {
         "en" : {
@@ -315,6 +354,19 @@
           }
         }
       }
+    },
+    "TASKS" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tasks"
+          }
+        }
+      }
+    },
+    "Tasks View" : {
+
     },
     "THANKS_FOR_REGISTERING_ACCOUNT" : {
       "extractionState" : "manual",

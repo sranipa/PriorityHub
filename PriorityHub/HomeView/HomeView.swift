@@ -8,8 +8,46 @@
 import SwiftUI
 
 struct HomeView: View {
+    @Environment(GlobalObject.self) var globalObject
+    @State var isShowingAddTask : Bool = false
     var body: some View {
-        Text("Hello, Welcome to HomeView!")
+        @Bindable var globalObject = globalObject
+         
+        ZStack(alignment: .bottom) {
+            TabView(selection: $globalObject.selectedTab) {
+                
+                DashboardView()
+                    .tabItem {  Label("HOME", systemImage: "house.fill") }
+                    .tag(0)
+                
+                TaskView()
+                    .tabItem {  Label("TASKS", systemImage: "checklist") }
+                    .tag(1)
+                
+                InsightsView()
+                    .tabItem {  Label("INSIGHTS", systemImage: "chart.bar.fill") }
+                    .tag(2)
+                
+                ProfileView()
+                    .tabItem {  Label("PROFILE", systemImage: "person.circle") }
+                    .tag(2)
+            }
+            
+            Button {
+                isShowingAddTask.toggle()
+            } label: {
+                Image(systemName: "plus")
+                            .font(.title.bold())
+                            .foregroundColor(.blue)
+                            .padding()
+                            .background(Circle().fill(Color.white))
+                            .shadow(radius: 4)
+            }
+            .offset(y: -20)
+            
+        }.fullScreenCover(isPresented: $isShowingAddTask) {
+            AddTaskView()
+        }
     }
 }
 

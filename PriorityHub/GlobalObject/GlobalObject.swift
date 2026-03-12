@@ -12,6 +12,9 @@ import FirebaseFirestore
 
 @Observable
 class GlobalObject {
+    
+    var selectedTab : Int = 1
+    
     // Login Status
     var isUserLoggedIn : Bool = false
     var currentUser : UserProfileModel?

@@ -1,6 +1,17 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "ACCOUNT" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Account"
+          }
+        }
+      }
+    },
     "Add Task" : {
 
     },
@@ -36,12 +47,42 @@
         }
       }
     },
+    "ARE_YOU_SURE_YOU_WANT_TO_LOGOUT" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Are you sure, you want to Logout?"
+          }
+        }
+      }
+    },
+    "CANCEL" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        }
+      }
+    },
     "CONFIRM_PASSWORD" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Confirm Password"
+          }
+        }
+      }
+    },
+    "DARK_MODE" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dark Mode"
           }
         }
       }
@@ -195,6 +236,16 @@
         }
       }
     },
+    "LOGOUT" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Logout"
+          }
+        }
+      }
+    },
     "NETWORK_ERROR_PLEASE_CHECK_YOUR_CONNECTION" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -290,9 +341,6 @@
           }
         }
       }
-    },
-    "Profile View" : {
-
     },
     "REGISTER" : {
       "localizations" : {

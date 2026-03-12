@@ -30,7 +30,7 @@ struct HomeView: View {
                 
                 ProfileView()
                     .tabItem {  Label("PROFILE", systemImage: "person.circle") }
-                    .tag(2)
+                    .tag(3)
             }
             
             Button {

@@ -12,6 +12,7 @@ import FirebaseCore
 struct PriorityHubApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate //Register App Delegate
     @State private var globalObject = GlobalObject()
+    @AppStorage(CONSTANT.IS_DARK_MODE) private var isDarkMode = false
     
 //    init() {
 //        FirebaseApp.configure()
@@ -23,6 +24,7 @@ struct PriorityHubApp: App {
                 .loadingOverlay(isLoading: AlertManager.shared.isShowGlobalLoading)
                 .globalAlertView()
                 .environment(globalObject)
+                .preferredColorScheme(isDarkMode ? .dark : .none)
         }
     }
 }

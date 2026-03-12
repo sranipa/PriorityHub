@@ -19,3 +19,8 @@ struct PARAMS {
     static let EMAIL : String = "email"
     static let CREATED_AT : String = "createdAt"
 }
+
+//MARK: - Cosntant
+struct CONSTANT {
+    static let IS_DARK_MODE : String = "isDarkMode"
+}

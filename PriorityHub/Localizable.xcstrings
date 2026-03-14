@@ -87,6 +87,16 @@
         }
       }
     },
+    "DASHBOARD" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dashboard"
+          }
+        }
+      }
+    },
     "Dashboard View" : {
 
     },
@@ -158,16 +168,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Forgot Password?"
-          }
-        }
-      }
-    },
-    "HOME" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Home"
           }
         }
       }
@@ -342,6 +342,16 @@
         }
       }
     },
+    "PROFILE UPDATE SUCCESSFULLY" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profile update successfully!"
+          }
+        }
+      }
+    },
     "REGISTER" : {
       "localizations" : {
         "en" : {
@@ -434,6 +444,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The email address is invalid"
+          }
+        }
+      }
+    },
+    "YOU_CANT_CHANGE_ADDRESS" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can’t change address."
           }
         }
       }

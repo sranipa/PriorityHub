@@ -17,7 +17,7 @@ struct HomeView: View {
             TabView(selection: $globalObject.selectedTab) {
                 
                 DashboardView()
-                    .tabItem {  Label("HOME", systemImage: "house.fill") }
+                    .tabItem {  Label("DASHBOARD", systemImage: "house.fill") }
                     .tag(0)
                 
                 TaskView()

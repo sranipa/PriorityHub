@@ -17,7 +17,12 @@ struct ProfileView: View {
             List {
                 
                 Section {
-                    profileRow(icon: "key", name: String(localized:"ACCOUNT"))
+                    NavigationLink {
+                        UserProfileView()
+                    } label: {
+                        Label("ACCOUNT", systemImage: "key")
+                            .foregroundStyle(Color.primary)
+                    }
                     
                     Toggle(isOn: $isDarkMode) {
                         Label("DARK_MODE", systemImage:"moon")

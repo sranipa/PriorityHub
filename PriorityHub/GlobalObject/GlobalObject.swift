@@ -17,8 +17,9 @@ class GlobalObject {
     
     // Login Status
     var isUserLoggedIn : Bool = false
-    var currentUser : UserProfileModel?
+    var currentUser : ProfileModel?
     private var authStateHandler : AuthStateDidChangeListenerHandle?
+    var userProfileListener : ListenerRegistration?
     
     init() {
         // Listen to auth handler for Login/Logout/AppLaunch
@@ -31,6 +32,9 @@ class GlobalObject {
     deinit {
         if let handler = authStateHandler {
             Auth.auth().removeStateDidChangeListener(handler)
+        }
+        if let userListener = userProfileListener {
+            userListener.remove()
         }
     }
     //MARK: - Check app is launching first time
@@ -64,13 +68,34 @@ class GlobalObject {
         do {
             let snapshot = try await db.collection(COLLECTION.USERS).document(uid).getDocument()
             
-            if let profile = try? snapshot.data(as: UserProfileModel.self) {
+            if let profile = try? snapshot.data(as: ProfileModel.self) {
                 await MainActor.run {
                     self.currentUser = profile
+                    self.addListnerForUserProfileData()
                 }
             }
         } catch {
             print("Error fetching user profile: \(error)")
+        }
+    }
+    
+    func addListnerForUserProfileData() {
+        let db = Firestore.firestore()
+        if let uid = currentUser?.uid, userProfileListener == nil {
+            userProfileListener?.remove()
+            // 1. Process data on the background thread (from Firestore)
+            userProfileListener = db.collection(COLLECTION.USERS).document(uid).addSnapshotListener { snapshot, error in
+                if let snapshot = snapshot {
+                    guard let data = try? snapshot.data(as: ProfileModel.self) else { return }
+                    // 2. Hop to the MainActor to update the @Observable property
+                    Task {
+                        @MainActor in
+                        self.currentUser = data
+                    }
+                } else {
+                    print("Global Object: Error --> \(error?.localizedDescription ?? "")")
+                }
+            }
         }
     }
 }

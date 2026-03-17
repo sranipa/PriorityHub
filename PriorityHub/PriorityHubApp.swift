@@ -7,6 +7,7 @@
 
 import SwiftUI
 import FirebaseCore
+import SwiftData
 
 @main
 struct PriorityHubApp: App {
@@ -25,6 +26,7 @@ struct PriorityHubApp: App {
                 .globalAlertView()
                 .environment(globalObject)
                 .preferredColorScheme(isDarkMode ? .dark : .none)
+                .modelContainer(for: [Project.self, TaskItem.self])
         }
     }
 }

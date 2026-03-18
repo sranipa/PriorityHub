@@ -45,9 +45,13 @@ struct HomeView: View {
             }
             .offset(y: -20)
             
-        }.fullScreenCover(isPresented: $isShowingAddTask) {
-            AddTaskView()
         }
+        .sheet(isPresented: $isShowingAddTask, content: {
+            AddTaskView()
+        })
+//        .fullScreenCover(isPresented: $isShowingAddTask) {
+//            AddTaskView()
+//        }
     }
 }
 

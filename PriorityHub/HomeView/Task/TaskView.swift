@@ -6,10 +6,36 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct TaskView: View {
+    @Query var tasks : [TaskItem]
+    
+    @State var isShowAddTask : Bool = false
+    
     var body: some View {
-        Text("Tasks View")
+        NavigationStack {
+            Group {
+                if tasks.isEmpty {
+                    ContentUnavailableView("No Tasks Found", systemImage: "plus.app.fill", description: Text("Create your first task."))
+                        .buttonStyle(.borderedProminent)
+                        .onTapGesture {
+                            isShowAddTask.toggle()
+                        }
+                } else {
+                    viewForTaskList
+                }
+            }
+            .sheet(isPresented: $isShowAddTask, content: {
+                AddTaskView()
+            })
+//            .fullScreenCover(isPresented: $isShowAddTask) {
+//                AddTaskView()
+//            }
+        }
+    }
+    var viewForTaskList : some View {
+        VStack {}
     }
 }
 

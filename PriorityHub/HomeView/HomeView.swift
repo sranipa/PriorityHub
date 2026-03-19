@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct HomeView: View {
+    @Environment(\.modelContext) private var modelContext
     @Environment(GlobalObject.self) var globalObject
     @State var isShowingAddTask : Bool = false
     var body: some View {
@@ -47,7 +48,7 @@ struct HomeView: View {
             
         }
         .sheet(isPresented: $isShowingAddTask, content: {
-            AddTaskView()
+            AddTaskView(viewModel: AddTaskViewModel(modelContext: modelContext))
         })
 //        .fullScreenCover(isPresented: $isShowingAddTask) {
 //            AddTaskView()

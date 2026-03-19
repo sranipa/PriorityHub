@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct TaskView: View {
+    @Environment(\.modelContext) private var modelContext
     @Query var tasks : [TaskItem]
     
     @State var isShowAddTask : Bool = false
@@ -27,7 +28,7 @@ struct TaskView: View {
                 }
             }
             .sheet(isPresented: $isShowAddTask, content: {
-                AddTaskView()
+                AddTaskView(viewModel: AddTaskViewModel(modelContext: modelContext))
             })
 //            .fullScreenCover(isPresented: $isShowAddTask) {
 //                AddTaskView()
@@ -35,7 +36,11 @@ struct TaskView: View {
         }
     }
     var viewForTaskList : some View {
-        VStack {}
+        VStack {
+            List(tasks) { task in
+                Text(task.title)
+            }
+        }
     }
 }
 

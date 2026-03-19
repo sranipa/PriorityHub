@@ -6,10 +6,13 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct AddTaskView: View {
+    @Environment(\.dismiss) var dismiss
+    @Environment(\.modelContext) private var modelContext
     
-    @State private var viewModel : AddTaskViewModel = AddTaskViewModel()
+    @State var viewModel : AddTaskViewModel
     @FocusState private var focusField : AddTaskField?
     
     var body: some View {
@@ -42,7 +45,9 @@ struct AddTaskView: View {
             Spacer()
             
             Button(action: {
-                viewModel.addTask()
+                viewModel.addTask(completion: {
+                    dismiss()
+                })
             }, label: {
                 Text("ADD_TASK")
                     .frame(maxWidth: .infinity)
@@ -58,9 +63,9 @@ struct AddTaskView: View {
     }
 }
 
-#Preview {
-    AddTaskView()
-}
+//#Preview {
+//    AddTaskView()
+//}
 //MARK: -
 //MARK: - Only for View
 private enum AddTaskField : Hashable {

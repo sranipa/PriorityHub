@@ -59,6 +59,7 @@ class GlobalObject {
             } else {
                 self.isUserLoggedIn = false
                 self.currentUser = nil
+                removeFirebaseUserID()
             }
         })
     }
@@ -71,6 +72,7 @@ class GlobalObject {
             if let profile = try? snapshot.data(as: ProfileModel.self) {
                 await MainActor.run {
                     self.currentUser = profile
+                    setFirebaseUserID(userId: self.currentUser?.uid ?? "")
                     self.addListnerForUserProfileData()
                 }
             }
@@ -91,6 +93,7 @@ class GlobalObject {
                     Task {
                         @MainActor in
                         self.currentUser = data
+                        setFirebaseUserID(userId: self.currentUser?.uid ?? "")
                     }
                 } else {
                     print("Global Object: Error --> \(error?.localizedDescription ?? "")")

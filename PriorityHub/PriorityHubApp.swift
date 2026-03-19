@@ -15,9 +15,12 @@ struct PriorityHubApp: App {
     @State private var globalObject = GlobalObject()
     @AppStorage(CONSTANT.IS_DARK_MODE) private var isDarkMode = false
     
-//    init() {
-//        FirebaseApp.configure()
-//    }
+    init() {
+        // We add condition here. So content view direct disply home screen. Otherwise it will display first login screeen and then after within 2 second it will display home screen.
+        if getUserLoggedIn() {
+            globalObject.isUserLoggedIn = true
+        }
+    }
     
     var body: some Scene {
         WindowGroup {

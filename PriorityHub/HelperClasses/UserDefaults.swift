@@ -32,3 +32,12 @@ func removeFirebaseUserID() {
     UserDefaults.standard.removeObject(forKey: PREFERENCE_KEY.firebaseUserId)
     UserDefaults.standard.synchronize()
 }
+//MARK: -
+//MARK: - User Login Status
+func setUserLoggedIn(status:Bool) {
+    UserDefaults.standard.set(status, forKey: PREFERENCE_KEY.isUserLoggedIn)
+    UserDefaults.standard.synchronize()
+}
+func getUserLoggedIn() -> Bool {
+    UserDefaults.standard.bool(forKey: PREFERENCE_KEY.isUserLoggedIn)
+}

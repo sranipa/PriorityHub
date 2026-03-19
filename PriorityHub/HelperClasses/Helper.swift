@@ -24,3 +24,18 @@ struct PARAMS {
 struct CONSTANT {
     static let IS_DARK_MODE : String = "isDarkMode"
 }
+
+
+//MARK: -
+//MARK: - Get Date fromatted
+func getDate(date:Date) -> String {
+    if Calendar.current.isDateInToday(date) {
+        return String(localized: "TODAY")
+    } else if Calendar.current.isDateInTomorrow(date) {
+        return String(localized: "TOMORROW")
+    } else if Calendar.current.isDateInYesterday(date) {
+        return String(localized: "YESTERDAY")
+    } else {
+        return date.formatted(date:.abbreviated, time: .omitted)
+    }
+}

@@ -43,6 +43,7 @@ class GlobalObject {
         if !isFirstTimeLaunched {
             try? Auth.auth().signOut()
             setIsFirstTimeLaunchedApp(status: true)
+            setUserLoggedIn(status: false)
         }
     }
     //MARK: - setting listener to check user loggeIn and Logout
@@ -53,11 +54,13 @@ class GlobalObject {
             
             if let firebaseUser = user, firebaseUser.isEmailVerified {
                 self.isUserLoggedIn = true
+                setUserLoggedIn(status: true)
                 Task {
                     await self.getUserProfileDetails(uid: firebaseUser.uid)
                 }
             } else {
                 self.isUserLoggedIn = false
+                setUserLoggedIn(status: false)
                 self.currentUser = nil
                 removeFirebaseUserID()
             }

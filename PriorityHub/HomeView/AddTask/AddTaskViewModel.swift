@@ -80,7 +80,7 @@ class AddTaskViewModel {
     func addTask(completion: @escaping() -> Void) {
         if isValidForm {
             if let uid = getFirebaseUserID() {
-                let newTask = TaskItem(title: title, ownerId: uid)
+                let newTask = TaskItem(title: title, notes: note, ownerId: uid)
                 newTask.project = selectedProject
                 modelContext.insert(newTask)
                 do {

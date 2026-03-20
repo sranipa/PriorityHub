@@ -6,7 +6,7 @@
 //
 
 import Foundation
-class ProfileModel : Codable {
+struct ProfileModel : Codable, Sendable {
     var uid : String = ""
     var firstName : String = ""
     var lastName : String = ""

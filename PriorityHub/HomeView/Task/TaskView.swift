@@ -75,6 +75,10 @@ struct TaskView: View {
                             }
                             
                             HStack {
+                                Text(task.notes)
+                                    .multilineTextAlignment(.leading)
+                                    .font(.footnote)
+                                
                                 Spacer()
                                 
                                 Text(".\(task.project?.name ?? "")")

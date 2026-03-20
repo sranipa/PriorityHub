@@ -21,9 +21,16 @@ class AddTaskViewModel {
     // All Saved projects
     var projects : [Project] = []
     
+    // This is for Add New Project
+    var projectName : String = ""
+    var isAddProjectSubmitDisable : Bool {
+        projectName.trimmingCharacters(in: .whitespaces).isEmpty
+    }
+    let DefaultProjectName: String = "Inbox"
+    
     // Selected Project -
     // By default we will save first project from Projects Array
-    var selectedProject : Project?
+    var selectedProject : Project? = nil
     
     private var model = AddTaskModel()
     var title : String {
@@ -54,6 +61,21 @@ class AddTaskViewModel {
     }
     
     //MARK: -
+    //MARK: - Add New Project
+    func addNewProject(completion: @escaping() -> Void) {
+        let newProject : Project = Project(name: projectName)
+        modelContext.insert(newProject)
+        do {
+            try  modelContext.save()
+            selectedProject = newProject
+            projects.append(newProject)
+            completion()
+        } catch {
+            print("AddTaskViewModel - Failed To Save Task: \(error.localizedDescription)")
+        }
+    }
+    
+    //MARK: -
     //MARK: - ADDTask to SwiftData - Local Storage
     func addTask(completion: @escaping() -> Void) {
         if isValidForm {
@@ -81,7 +103,9 @@ class AddTaskViewModel {
         do {
             projects = try modelContext.fetch(descriptor)
             
-            if let firstProject = projects.first {
+            // Selected project is nil. then we will set INBOX to default one.
+            if let firstProject = projects.first(where: {$0.name == DefaultProjectName}), selectedProject == nil
+            {
                 selectedProject = firstProject
             }
         } catch {
@@ -92,7 +116,7 @@ class AddTaskViewModel {
     //MARK: - We will add default project if any project is not available.
     func addDefaultProject() {
         let predicate = #Predicate<Project> { project in
-            project.name == "Inbox"
+            project.name == DefaultProjectName
         }
         let descriptor = FetchDescriptor(predicate: predicate, sortBy: [SortDescriptor(\Project.name)])
         do {
@@ -101,7 +125,7 @@ class AddTaskViewModel {
             
             //If not found then we will add one
             if project.isEmpty {
-                let defaultProject = Project.init(name: "Inbox")
+                let defaultProject = Project.init(name: DefaultProjectName)
                 modelContext.insert(defaultProject)
                 try modelContext.save()
             }

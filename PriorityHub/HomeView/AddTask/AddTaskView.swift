@@ -15,15 +15,16 @@ struct AddTaskView: View {
     @State var viewModel : AddTaskViewModel
     @FocusState private var focusField : AddTaskField?
     
+    @State var isShowAddProject : Bool = false
+    
     var body: some View {
-        VStack(spacing: 20) {
+        Form {
             Text("ADD_TASK")
                 .font(.title)
                 .padding(.top)
                 .bold()
             
             TextField("TITLE", text: $viewModel.title)
-                .textFieldStyle(.roundedBorder)
                 .textInputAutocapitalization(.sentences)
                 .autocorrectionDisabled()
                 .focused($focusField, equals: .title)
@@ -33,7 +34,6 @@ struct AddTaskView: View {
                 }
             
             TextField("NOTE", text: $viewModel.note)
-                .textFieldStyle(.roundedBorder)
                 .autocorrectionDisabled()
                 .textInputAutocapitalization(.sentences)
                 .focused($focusField, equals: .note)
@@ -42,7 +42,7 @@ struct AddTaskView: View {
                     focusField = .date
                 }
             
-            Spacer()
+            viewForSelectProject
             
             Button(action: {
                 viewModel.addTask(completion: {
@@ -55,10 +55,74 @@ struct AddTaskView: View {
             .buttonStyle(.borderedProminent)
             .disabled(viewModel.isSubmitDisable)
         }
-        .padding()
-        .contentShape(Rectangle())
-        .onTapGesture {
-            focusField = .none
+        .sheet(isPresented: $isShowAddProject, content: {
+            viewForAddNewProject
+        })
+    }
+    
+    var viewForSelectProject : some View {
+        Menu {
+            // 1. The Selectable Projects
+            ForEach(viewModel.projects) { project in
+                Button {
+                    withAnimation(.snappy) {
+                        viewModel.selectedProject = project
+                    }
+                } label: {
+                    HStack {
+                        Text(project.name)
+                        if viewModel.selectedProject?.id == project.id {
+                            Image(systemName: "checkmark")
+                        }
+                    }
+                }
+            }
+            
+            Divider()
+            
+            // 2. The Action Button For Add New Project
+            Button(action: {
+                isShowAddProject.toggle()
+            }, label: {
+                Label(String(localized: "ADD_NEW_PROJECT"), systemImage: "plus")
+            })
+            
+        } label: {
+            // 3. The Custom "Picker" Label
+            HStack {
+                Text(viewModel.selectedProject?.name ?? String(localized: "SELECT_PROJECT"))
+                    .foregroundStyle(viewModel.selectedProject == nil ? Color.gray : Color.primary)
+                
+                Spacer()
+                
+                Image(systemName: "chevron.up.chevron.down")
+                    .font(.caption)
+            }
+        }
+        .animation(.spring(duration: 0.3), value: viewModel.selectedProject?.id)
+    }
+    var viewForAddNewProject : some View {
+        Form {
+            Text("ADD_NEW_PROJECT")
+                .font(.title)
+                .padding(.top)
+                .bold()
+            
+            TextField("NAME", text: $viewModel.projectName)
+                .autocorrectionDisabled()
+                .textInputAutocapitalization(.sentences)
+            
+            Button {
+                viewModel.addNewProject(completion: {
+                    isShowAddProject.toggle()
+                })
+            } label: {
+                Text("SUBMIT")
+                    .frame(maxWidth:.infinity)
+            }
+            .buttonStyle(.borderedProminent)
+            .disabled(viewModel.isAddProjectSubmitDisable)
+
         }
     }
 }

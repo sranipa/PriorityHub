@@ -37,7 +37,7 @@ struct TaskView: View {
         NavigationStack {
             Group {
                 if tasks.isEmpty {
-                    ContentUnavailableView("No Tasks Found", systemImage: "plus.app.fill", description: Text("Create your first task."))
+                    ContentUnavailableView(String(localized: "NO_TASK_FOUND"), systemImage: "plus.app.fill", description: Text(String(localized: "CREATE_YOUR_FIRST_TASK")))
                         .buttonStyle(.borderedProminent)
                         .onTapGesture {
                             isShowAddTask.toggle()

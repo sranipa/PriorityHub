@@ -18,6 +18,16 @@
     "Add New Project View" : {
 
     },
+    "ADD_NEW_PROJECT" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add New Project"
+          }
+        }
+      }
+    },
     "ADD_TASK" : {
       "localizations" : {
         "en" : {
@@ -90,7 +100,7 @@
         }
       }
     },
-    "Create your first task." : {
+    "CREATE_YOUR_FIRST_TASK" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -269,6 +279,16 @@
         }
       }
     },
+    "NAME" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name"
+          }
+        }
+      }
+    },
     "NETWORK_ERROR_PLEASE_CHECK_YOUR_CONNECTION" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -280,16 +300,6 @@
         }
       }
     },
-    "No Tasks Found" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No Tasks Found."
-          }
-        }
-      }
-    },
     "NO_ACCOUNT_FOUND_WITH_THIS_EMAIL" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -297,6 +307,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No account found with this email."
+          }
+        }
+      }
+    },
+    "NO_TASK_FOUND" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Tasks Found."
           }
         }
       }
@@ -431,6 +451,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Reset Password link has been sent on you email."
+          }
+        }
+      }
+    },
+    "SELECT_PROJECT" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select Project"
           }
         }
       }

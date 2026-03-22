@@ -45,7 +45,7 @@ class AddTaskViewModel {
         get { model.dueDate }
         set { model.dueDate = newValue }
     }
-    var priorityLevel : Int {
+    var priorityLevel : PriorityLevel {
         get { model.priorityLevel }
         set { model.priorityLevel = newValue }
     }
@@ -80,7 +80,11 @@ class AddTaskViewModel {
     func addTask(completion: @escaping() -> Void) {
         if isValidForm {
             if let uid = getFirebaseUserID() {
-                let newTask = TaskItem(title: title, notes: note, ownerId: uid)
+                let newTask = TaskItem(title: title,
+                                       notes: note,
+                                       dueDate: dueDate,
+                                       priorityLevel: priorityLevel.rawValue,
+                                       ownerId: uid)
                 newTask.project = selectedProject
                 modelContext.insert(newTask)
                 do {

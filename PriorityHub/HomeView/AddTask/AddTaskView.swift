@@ -39,10 +39,14 @@ struct AddTaskView: View {
                 .focused($focusField, equals: .note)
                 .submitLabel(.next)
                 .onSubmit {
-                    focusField = .date
+                    focusField = .none
                 }
             
             viewForSelectProject
+            
+            viewForDatePicker
+            
+            viewForPriorityLevel
             
             Button(action: {
                 viewModel.addTask(completion: {
@@ -59,49 +63,79 @@ struct AddTaskView: View {
             viewForAddNewProject
         })
     }
+    //MARK: -
+    //MARK: - View For Priority
+    var viewForPriorityLevel : some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("PRIORITY")
+                .foregroundColor(.primary)
+            
+            Picker("SELECT_PRIORITY", selection: $viewModel.priorityLevel) {
+                ForEach(PriorityLevel.allCases) { level in
+                    Text(level.label).tag(level)
+                }
+            }.pickerStyle(.segmented)
+        }
+    }
+    //MARK: -
+    //MARK: - Due Date -Date Picker View
+    var viewForDatePicker : some View {
+        DatePicker("DUE_DATE",
+                   selection: $viewModel.dueDate,
+                   in: Date()...,
+                   displayedComponents: .date)
+            .datePickerStyle(.compact)
+            .background(Color.clear)
+    }
     
     //MARK: -
     //MARK: - Project Selection Picker & Add New Project View
     var viewForSelectProject : some View {
-        Menu {
-            // 1. The Selectable Projects
-            ForEach(viewModel.projects) { project in
-                Button {
-                    withAnimation(.snappy) {
-                        viewModel.selectedProject = project
-                    }
-                } label: {
-                    HStack {
-                        Text(project.name)
-                        if viewModel.selectedProject?.id == project.id {
-                            Image(systemName: "checkmark")
+        HStack(spacing:5) {
+            Text(String(localized: "SELECT_PROJECT"))
+                .foregroundStyle(Color.primary)
+            
+            Spacer()
+            
+            Menu {
+                // 1. The Selectable Projects
+                ForEach(viewModel.projects) { project in
+                    Button {
+                        withAnimation(.snappy) {
+                            viewModel.selectedProject = project
+                        }
+                    } label: {
+                        HStack {
+                            Text(project.name)
+                            if viewModel.selectedProject?.id == project.id {
+                                Image(systemName: "checkmark")
+                            }
                         }
                     }
                 }
-            }
-            
-            Divider()
-            
-            // 2. The Action Button For Add New Project
-            Button(action: {
-                isShowAddProject.toggle()
-            }, label: {
-                Label(String(localized: "ADD_NEW_PROJECT"), systemImage: "plus")
-            })
-            
-        } label: {
-            // 3. The Custom "Picker" Label
-            HStack {
-                Text(viewModel.selectedProject?.name ?? String(localized: "SELECT_PROJECT"))
-                    .foregroundStyle(viewModel.selectedProject == nil ? Color.gray : Color.primary)
                 
-                Spacer()
+                Divider()
                 
-                Image(systemName: "chevron.up.chevron.down")
-                    .font(.caption)
+                // 2. The Action Button For Add New Project
+                Button(action: {
+                    isShowAddProject.toggle()
+                }, label: {
+                    Label(String(localized: "ADD_NEW_PROJECT"), systemImage: "plus")
+                })
+                
+            } label: {
+                // 3. The Custom "Picker" Label
+                    HStack(spacing:5) {
+                    Text(viewModel.selectedProject?.name ?? String(localized: "SELECT_PROJECT"))
+                        .foregroundStyle(viewModel.selectedProject == nil ? Color.gray : Color.primary)
+                    
+                    Image(systemName: "chevron.up.chevron.down")
+                        .font(.caption)
+                }
+                
             }
+            .animation(.spring(duration: 0.3), value: viewModel.selectedProject?.id)
         }
-        .animation(.spring(duration: 0.3), value: viewModel.selectedProject?.id)
     }
     var viewForAddNewProject : some View {
         Form {
@@ -140,4 +174,33 @@ private enum AddTaskField : Hashable {
     case date
     case priority
     case project
+}
+enum PriorityLevel : Int, Identifiable, CaseIterable {
+    case low = 0
+    case medium = 1
+    case high = 2
+    
+    var id : Int { self.rawValue }
+    
+    var label : String {
+        switch self {
+        case .low:
+            return "Low"
+        case .medium:
+            return "Medium"
+        case .high:
+            return "High"
+        }
+    }
+    
+    var color : Color {
+        switch self {
+        case .low:
+            return .blue
+        case .medium:
+            return .gray
+        case .high:
+            return .red
+        }
+    }
 }

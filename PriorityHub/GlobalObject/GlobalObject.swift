@@ -30,12 +30,12 @@ class GlobalObject {
         }
     }
     deinit {
-        if let handler = authStateHandler {
-            Auth.auth().removeStateDidChangeListener(handler)
-        }
-        if let userListener = userProfileListener {
-            userListener.remove()
-        }
+//        if let handler = authStateHandler {
+//            Auth.auth().removeStateDidChangeListener(handler)
+//        }
+//        if let userListener = userProfileListener {
+//            userListener.remove()
+//        }
     }
     //MARK: - Check app is launching first time
     private func checkFirstLaunch() {

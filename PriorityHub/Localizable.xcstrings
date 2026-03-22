@@ -140,6 +140,16 @@
         }
       }
     },
+    "DUE_DATE" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Due Date"
+          }
+        }
+      }
+    },
     "EMAIL" : {
       "localizations" : {
         "en" : {
@@ -392,6 +402,16 @@
         }
       }
     },
+    "PRIORITY" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Priority"
+          }
+        }
+      }
+    },
     "PROFILE" : {
       "localizations" : {
         "en" : {
@@ -448,6 +468,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Reset Password link has been sent on you email."
+          }
+        }
+      }
+    },
+    "SELECT_PRIORITY" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select Priority"
           }
         }
       }

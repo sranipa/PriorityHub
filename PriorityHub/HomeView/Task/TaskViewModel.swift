@@ -12,6 +12,12 @@ import SwiftData
 class TaskViewModel {
     
     //MARK: -
+    //MARK: - Complete Task 
+    func onComplete(modelContext: ModelContext, taskItem: TaskItem){
+        taskItem.isCompleted = true
+        try? modelContext.save()
+    }
+    //MARK: -
     //MARK: - Perform delete operation for TaskItem
     func onDelete(modelContext: ModelContext, taskItem: TaskItem) {
         let strMsg : String = String(localized: "ARE_YOU_SURE_YOU_WANT_TO_DELETE") + " \(taskItem.title)?"

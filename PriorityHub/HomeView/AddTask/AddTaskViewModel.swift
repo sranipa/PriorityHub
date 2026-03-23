@@ -9,14 +9,27 @@ import Foundation
 import SwiftData
 
 @Observable
+@MainActor
 class AddTaskViewModel {
     
     private var modelContext : ModelContext
-    init(modelContext: ModelContext) {
+    init(modelContext: ModelContext, isFromEdit: Bool = false, editTaskItem : TaskItem? = nil) {
         self.modelContext = modelContext
+        self.isFromEdit = isFromEdit
+        self.editTaskItem = editTaskItem
         self.addDefaultProject() // There is no any project we will add default "Inbox" project
         self.getAllProjects() // Fetch all saved projects
+        if self.isFromEdit {
+            self.title = editTaskItem?.title ?? ""
+            self.note = editTaskItem?.notes ?? ""
+            self.dueDate = editTaskItem?.dueDate ?? .now
+            self.priorityLevel = PriorityLevel(rawValue: editTaskItem?.priorityLevel ?? 1) ?? .medium
+            self.selectedProject = editTaskItem?.project
+        }
     }
+    // For Edit Task
+    var isFromEdit : Bool = false
+    var editTaskItem : TaskItem? = nil
     
     // All Saved projects
     var projects : [Project] = []
@@ -72,6 +85,24 @@ class AddTaskViewModel {
             completion()
         } catch {
             print("AddTaskViewModel - Failed To Save Task: \(error.localizedDescription)")
+        }
+    }
+    //MARK: -
+    //MARK: - Update taskItem
+    func updateTask(completion: @escaping() -> Void) {
+        if let task = editTaskItem {
+            task.title = title
+            task.notes = note
+            task.project = selectedProject
+            task.dueDate = dueDate
+            task.priorityLevel = priorityLevel.rawValue
+            
+            do {
+                try modelContext.save()
+                completion() // Here we will return completion so In View we can dismiss sheet
+            } catch {
+                print("AddTaskViewModel - Failed To Save Task: \(error.localizedDescription)")
+            }
         }
     }
     

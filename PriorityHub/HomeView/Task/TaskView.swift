@@ -33,6 +33,8 @@ struct TaskView: View {
     }
     
     @State var isShowAddTask : Bool = false
+    @State var isEditTaskItem : Bool = false
+    @State var editTaskItem : TaskItem? = nil
     
     var body: some View {
         NavigationStack {
@@ -47,12 +49,12 @@ struct TaskView: View {
                     viewForTaskList
                 }
             }
+            .sheet(item: $editTaskItem, content: { taskItem in
+                AddTaskView(viewModel: AddTaskViewModel(modelContext: modelContext,isFromEdit: true,editTaskItem: taskItem))
+            })
             .sheet(isPresented: $isShowAddTask, content: {
                 AddTaskView(viewModel: AddTaskViewModel(modelContext: modelContext))
             })
-//            .fullScreenCover(isPresented: $isShowAddTask) {
-//                AddTaskView()
-//            }
         }
     }
 //    var viewForTaskList : some View {
@@ -94,8 +96,15 @@ struct TaskView: View {
                                 Label("DELETE", systemImage: "trash")
                             }.tint(.red)
                             
+                            Button() {
+                                viewModel.onComplete(modelContext: modelContext, taskItem: task)
+                            } label: {
+                                Label("COMPLETE", systemImage: "checkmark.circle")
+                            }.tint(.green)
+                            
                             Button(){
-                                
+                                editTaskItem = task
+                                isEditTaskItem.toggle()
                             } label: {
                                 Label("EDIT", systemImage: "square.and.pencil")
                             }.tint(.blue)

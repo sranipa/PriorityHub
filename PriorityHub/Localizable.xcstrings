@@ -98,6 +98,16 @@
         }
       }
     },
+    "COMPLETE" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Complete"
+          }
+        }
+      }
+    },
     "CONFIRM_PASSWORD" : {
       "localizations" : {
         "en" : {
@@ -602,6 +612,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tomorrow"
+          }
+        }
+      }
+    },
+    "UPDATE_TASK" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Update Task"
           }
         }
       }

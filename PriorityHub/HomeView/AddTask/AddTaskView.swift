@@ -48,6 +48,27 @@ struct AddTaskView: View {
             
             viewForPriorityLevel
             
+            viewForSubmitButton
+        }
+        .sheet(isPresented: $isShowAddProject, content: {
+            viewForAddNewProject
+        })
+    }
+    //MARK: -
+    //MARK: - ViewForSubmit Button
+    var viewForSubmitButton : some View {
+        if viewModel.isFromEdit {
+            Button(action: {
+                viewModel.updateTask(completion: {
+                    dismiss()
+                })
+            }, label: {
+                Text("UPDATE_TASK")
+                    .frame(maxWidth: .infinity)
+            })
+            .buttonStyle(.borderedProminent)
+            .disabled(viewModel.isSubmitDisable)
+        } else {
             Button(action: {
                 viewModel.addTask(completion: {
                     dismiss()
@@ -59,10 +80,8 @@ struct AddTaskView: View {
             .buttonStyle(.borderedProminent)
             .disabled(viewModel.isSubmitDisable)
         }
-        .sheet(isPresented: $isShowAddProject, content: {
-            viewForAddNewProject
-        })
     }
+    
     //MARK: -
     //MARK: - View For Priority
     var viewForPriorityLevel : some View {

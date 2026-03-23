@@ -10,6 +10,7 @@ import SwiftData
 
 struct TaskView: View {
     @Environment(\.modelContext) private var modelContext
+    @State var viewModel : TaskViewModel = TaskViewModel()
     
     @Query(filter: #Predicate<TaskItem> { taskItem in
         taskItem.isCompleted == false
@@ -84,6 +85,20 @@ struct TaskView: View {
                                 Text(".\(task.project?.name ?? "")")
                                     .font(.caption)
                             }
+                        }
+                        .id(task.id)
+                        .swipeActions(edge:.trailing, allowsFullSwipe: false) {
+                            Button(){
+                                viewModel.onDelete(modelContext: modelContext, taskItem: task)
+                            } label: {
+                                Label("DELETE", systemImage: "trash")
+                            }.tint(.red)
+                            
+                            Button(){
+                                
+                            } label: {
+                                Label("EDIT", systemImage: "square.and.pencil")
+                            }.tint(.blue)
                         }
                     }
                 } header: {

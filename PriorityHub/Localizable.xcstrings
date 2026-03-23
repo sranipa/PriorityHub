@@ -67,6 +67,17 @@
         }
       }
     },
+    "ARE_YOU_SURE_YOU_WANT_TO_DELETE" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Are you sure, you want to delete"
+          }
+        }
+      }
+    },
     "ARE_YOU_SURE_YOU_WANT_TO_LOGOUT" : {
       "localizations" : {
         "en" : {
@@ -130,6 +141,16 @@
     "Dashboard View" : {
 
     },
+    "DELETE" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
+          }
+        }
+      }
+    },
     "DONT_HAVE_AN_ACCOUNT" : {
       "localizations" : {
         "en" : {
@@ -146,6 +167,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Due Date"
+          }
+        }
+      }
+    },
+    "EDIT" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit"
           }
         }
       }

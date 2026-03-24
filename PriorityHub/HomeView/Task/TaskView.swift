@@ -32,17 +32,23 @@ struct TaskView: View {
                     viewForTaskList
                         .searchable(text: $viewModel.searchText, prompt: String(localized: "SEARCH_TASK"))
                         .toolbar {
-                            ToolbarItem(placement: .topBarTrailing, content: {
-                                Menu {
-                                    Picker("SORT_BY", selection: $viewModel.sortOption) {
-                                        ForEach(TaskViewModel.sortOptions.allCases, id: \.self) { sortOption in
-                                            Text(sortOption.rawValue)
-                                                .tag(sortOption)
+                            ToolbarItemGroup(placement: .topBarTrailing, content: {
+                                    Menu {
+                                        Picker("SORT_BY", selection: $viewModel.sortOption) {
+                                            ForEach(TaskViewModel.sortOptions.allCases, id: \.self) { sortOption in
+                                                Text(sortOption.rawValue)
+                                                    .tag(sortOption)
+                                            }
                                         }
+                                    } label: {
+                                        Label("SORT_BY", systemImage: "line.3.horizontal.decrease.circle")
                                     }
-                                } label: {
-                                    Label("SORT_BY", systemImage: "line.3.horizontal.decrease.circle")
-                                }
+                                    
+                                    Button {
+                                    
+                                    } label: {
+                                        Label("Filter", systemImage: "slider.vertical.3")
+                                    }
                             })
                         }
                 }
@@ -81,6 +87,9 @@ struct TaskView: View {
                     .multilineTextAlignment(.leading)
                 
                 Spacer()
+                
+                Image(systemName: "flag.fill")
+                    .foregroundStyle(Color(PriorityLevel(rawValue: task.priorityLevel)?.color ?? .gray))
             }
             
             HStack {
@@ -92,6 +101,15 @@ struct TaskView: View {
                 
                 Text(".\(task.project?.name ?? "")")
                     .font(.caption)
+            }
+            
+            if viewModel.sortOption != .dueDate {
+                HStack {
+                    Text(String(localized: "DUE_DATE") + " : " + getDate(date: task.dueDate))
+                        .font(.caption2)
+                    
+                    Spacer()
+                }
             }
         }
         .id(task.id)

@@ -217,7 +217,7 @@ enum PriorityLevel : Int, Identifiable, CaseIterable {
         case .low:
             return .blue
         case .medium:
-            return .gray
+            return .orange
         case .high:
             return .red
         }

@@ -513,6 +513,16 @@
         }
       }
     },
+    "SEARCH_TASK" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search Task"
+          }
+        }
+      }
+    },
     "SELECT_PRIORITY" : {
       "localizations" : {
         "en" : {
@@ -529,6 +539,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Select Project"
+          }
+        }
+      }
+    },
+    "SORT_BY" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sort By"
           }
         }
       }

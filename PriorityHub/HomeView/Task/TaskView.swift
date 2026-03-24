@@ -13,24 +13,7 @@ struct TaskView: View {
     @State var viewModel : TaskViewModel = TaskViewModel()
     
     @Query(filter: #Predicate<TaskItem> { taskItem in
-        taskItem.isCompleted == false
-    }, sort: [SortDescriptor(\TaskItem.dueDate)]) var tasks : [TaskItem]
-    
-    // Group tasks by the date component only (ignoring time)
-    var groupedTasks : [(date:Date, tasks:[TaskItem])] {
-        
-        // 1. Group the raw tasks into a Dictionary [Date: [TodoTask]]
-        let groupedDictionary = Dictionary(grouping: tasks) { task in
-            Calendar.current.startOfDay(for: task.dueDate)
-        }
-        
-        // 2. Sort the keys (Dates) and transform into a named Tuple array
-        return groupedDictionary
-            .sorted(by: { first, second in
-                first.key < second.key
-            }) // Sorts by oldest date to newest
-            .map { (date:$0.key, tasks:$0.value)} // Labels the data for the View
-    }
+        !taskItem.isCompleted }) var tasks : [TaskItem]
     
     @State var isShowAddTask : Bool = false
     @State var isEditTaskItem : Bool = false
@@ -47,6 +30,21 @@ struct TaskView: View {
                         }
                 } else {
                     viewForTaskList
+                        .searchable(text: $viewModel.searchText, prompt: String(localized: "SEARCH_TASK"))
+                        .toolbar {
+                            ToolbarItem(placement: .topBarTrailing, content: {
+                                Menu {
+                                    Picker("SORT_BY", selection: $viewModel.sortOption) {
+                                        ForEach(TaskViewModel.sortOptions.allCases, id: \.self) { sortOption in
+                                            Text(sortOption.rawValue)
+                                                .tag(sortOption)
+                                        }
+                                    }
+                                } label: {
+                                    Label("SORT_BY", systemImage: "line.3.horizontal.decrease.circle")
+                                }
+                            })
+                        }
                 }
             }
             .sheet(item: $editTaskItem, content: { taskItem in
@@ -57,66 +55,66 @@ struct TaskView: View {
             })
         }
     }
-//    var viewForTaskList : some View {
-//        VStack {
-//            List(tasks) { task in
-//                Text(task.title)
-//            }
-//        }
-//    }
+    
     var viewForTaskList : some View {
         List {
-            ForEach(groupedTasks, id: \.date) { group in
+            ForEach(viewModel.getGroupedTask(tasks: tasks), id: \.header) { group in
                 Section {
                     ForEach(group.tasks) { task in
-                        VStack(spacing:3){
-                            HStack {
-                                Text(task.title)
-                                    .multilineTextAlignment(.leading)
-                                
-                                Spacer()
-                            }
-                            
-                            HStack {
-                                Text(task.notes)
-                                    .multilineTextAlignment(.leading)
-                                    .font(.footnote)
-                                
-                                Spacer()
-                                
-                                Text(".\(task.project?.name ?? "")")
-                                    .font(.caption)
-                            }
-                        }
-                        .id(task.id)
-                        .swipeActions(edge:.trailing, allowsFullSwipe: false) {
-                            Button(){
-                                viewModel.onDelete(modelContext: modelContext, taskItem: task)
-                            } label: {
-                                Label("DELETE", systemImage: "trash")
-                            }.tint(.red)
-                            
-                            Button() {
-                                viewModel.onComplete(modelContext: modelContext, taskItem: task)
-                            } label: {
-                                Label("COMPLETE", systemImage: "checkmark.circle")
-                            }.tint(.green)
-                            
-                            Button(){
-                                editTaskItem = task
-                                isEditTaskItem.toggle()
-                            } label: {
-                                Label("EDIT", systemImage: "square.and.pencil")
-                            }.tint(.blue)
-                        }
+                        getRowView(task: task)
                     }
                 } header: {
-                    Text(getDate(date: group.date))
+                    Text(group.header)
                         .font(.subheadline)
                         .foregroundStyle(Color.secondary)
                 }
             }
         }.listStyle(.insetGrouped)
+    }
+    //MARK: -
+    //MARK: - Design For Row
+    @ViewBuilder
+    func getRowView(task:TaskItem) -> some View {
+        VStack(spacing:3){
+            HStack {
+                Text(task.title)
+                    .multilineTextAlignment(.leading)
+                
+                Spacer()
+            }
+            
+            HStack {
+                Text(task.notes)
+                    .multilineTextAlignment(.leading)
+                    .font(.footnote)
+                
+                Spacer()
+                
+                Text(".\(task.project?.name ?? "")")
+                    .font(.caption)
+            }
+        }
+        .id(task.id)
+        .swipeActions(edge:.trailing, allowsFullSwipe: false) {
+            Button(){
+                viewModel.onDelete(modelContext: modelContext, taskItem: task)
+            } label: {
+                Label("DELETE", systemImage: "trash")
+            }.tint(.red)
+            
+            Button() {
+                viewModel.onComplete(modelContext: modelContext, taskItem: task)
+            } label: {
+                Label("COMPLETE", systemImage: "checkmark.circle")
+            }.tint(.green)
+            
+            Button(){
+                editTaskItem = task
+                isEditTaskItem.toggle()
+            } label: {
+                Label("EDIT", systemImage: "square.and.pencil")
+            }.tint(.blue)
+        }
     }
 }
 

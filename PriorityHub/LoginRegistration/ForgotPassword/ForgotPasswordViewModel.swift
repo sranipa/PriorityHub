@@ -10,6 +10,7 @@ import SwiftUI
 import FirebaseAuth
 
 @Observable
+@MainActor
 class ForgotPasswordViewModel {
     
     // Here we create object for parent class- for pop to root view from navigation stack

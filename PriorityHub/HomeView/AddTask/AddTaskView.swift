@@ -19,7 +19,7 @@ struct AddTaskView: View {
     
     var body: some View {
         Form {
-            Text("ADD_TASK")
+            Text(viewModel.HeaderTitle)
                 .font(.title)
                 .padding(.top)
                 .bold()
@@ -217,7 +217,7 @@ enum PriorityLevel : Int, Identifiable, CaseIterable {
         case .low:
             return .blue
         case .medium:
-            return .orange
+            return .yellow
         case .high:
             return .red
         }

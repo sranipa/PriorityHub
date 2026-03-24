@@ -191,6 +191,17 @@
         }
       }
     },
+    "EDIT_TASK" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit Task"
+          }
+        }
+      }
+    },
     "EMAIL" : {
       "localizations" : {
         "en" : {
@@ -279,6 +290,9 @@
     },
     "Insights View" : {
 
+    },
+    "Key" : {
+      "extractionState" : "manual"
     },
     "LAST_NAME" : {
       "localizations" : {

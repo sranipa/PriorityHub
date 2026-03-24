@@ -10,6 +10,7 @@ import SwiftUI
 import FirebaseAuth
 
 @Observable
+@MainActor
 class ProfileViewModel {
     
     //MARK: - Alert For Logout

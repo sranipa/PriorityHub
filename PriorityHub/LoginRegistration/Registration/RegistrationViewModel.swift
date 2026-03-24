@@ -11,6 +11,7 @@ import FirebaseAuth
 import FirebaseFirestore
 
 @Observable
+@MainActor
 class RegistrationViewModel {
     
     var loginViewModel : LoginViewModel

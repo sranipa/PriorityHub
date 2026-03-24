@@ -27,6 +27,13 @@ class AddTaskViewModel {
             self.selectedProject = editTaskItem?.project
         }
     }
+    var HeaderTitle : String {
+        if isFromEdit {
+            String(localized: "EDIT_TASK")
+        } else {
+            String(localized: "ADD_TASK")
+        }
+    }
     // For Edit Task
     var isFromEdit : Bool = false
     var editTaskItem : TaskItem? = nil

@@ -9,6 +9,7 @@ import Foundation
 import SwiftData
 
 @Observable
+@MainActor
 class TaskViewModel {
     
     enum sortOptions : String, CaseIterable {

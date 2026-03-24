@@ -10,7 +10,9 @@ import SwiftUI
 import FirebaseAuth
 import FirebaseFirestore
 
-@Observable class UserProfileViewModel {
+@Observable
+@MainActor
+class UserProfileViewModel {
 
     var uid: String = ""
     var firstName : String = ""

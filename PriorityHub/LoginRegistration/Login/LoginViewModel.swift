@@ -10,7 +10,9 @@ import SwiftUI
 import Combine
 import FirebaseAuth
 
-@Observable class LoginViewModel {
+@Observable
+@MainActor
+class LoginViewModel {
     
     var path = [LoginRoute]() // This is source of truth for Navigation
     

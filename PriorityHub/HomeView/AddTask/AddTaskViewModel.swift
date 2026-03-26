@@ -103,9 +103,11 @@ class AddTaskViewModel {
             task.project = selectedProject
             task.dueDate = dueDate
             task.priorityLevel = priorityLevel.rawValue
+            task.isSynced = false
             
             do {
                 try modelContext.save()
+                firebaseSync()
                 completion() // Here we will return completion so In View we can dismiss sheet
             } catch {
                 print("AddTaskViewModel - Failed To Save Task: \(error.localizedDescription)")
@@ -127,6 +129,7 @@ class AddTaskViewModel {
                 modelContext.insert(newTask)
                 do {
                     try modelContext.save()
+                    firebaseSync()
                     completion() // Here we will return completion so In View we can dismiss sheet
                 } catch {
                     print("AddTaskViewModel - Failed To Save Task: \(error.localizedDescription)")
@@ -134,6 +137,11 @@ class AddTaskViewModel {
             }
         } else {
             AlertManager.shared.showAlert(title: "ALERT!", message: "PLEASE_ENTER_TASK_TITLE")
+        }
+    }
+    func firebaseSync() {
+        Task {
+            await syncUnsyncFirebase.init(modelContext: modelContext).uploadAllTasks()
         }
     }
     

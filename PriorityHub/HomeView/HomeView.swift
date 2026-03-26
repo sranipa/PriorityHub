@@ -47,6 +47,9 @@ struct HomeView: View {
             .offset(y: -20)
             
         }
+        .task {
+            await syncUnsyncFirebase.init(modelContext: modelContext).uploadAllTasks()
+        }
         .sheet(isPresented: $isShowingAddTask, content: {
             AddTaskView(viewModel: AddTaskViewModel(modelContext: modelContext))
         })

@@ -17,6 +17,18 @@ final actor firebaseServices : Sendable {
     
     let db = Firestore.firestore()
     
+    enum firebaseKeys : String {
+        case id = "id"
+        case title = "title"
+        case notes = "notes"
+        case dueDate = "dueDate"
+        case priorityLevel = "priorityLevel" // 0 - Low, 1 - Medium, 2 - High
+        case isCompleted = "isCompleted"
+        case ownerId = "ownerId"
+    }
+    let collectionTask : String = "tasks"
+    let userTasks : String = "userTasks"
+    
     func uploadTask(taskModel : TaskTansferModel) async throws {
         
         let dictTask : [String : Any] = [firebaseKeys.id.rawValue : taskModel.id,
@@ -27,17 +39,10 @@ final actor firebaseServices : Sendable {
                                          firebaseKeys.isCompleted.rawValue : taskModel.isCompleted,
                                          firebaseKeys.ownerId.rawValue : taskModel.ownerId]
         
-        try await db.collection("tasks").document(taskModel.ownerId).collection("userTasks").document(taskModel.id).setData(dictTask, merge: true)
+        try await db.collection(collectionTask).document(taskModel.ownerId).collection(userTasks).document(taskModel.id).setData(dictTask, merge: true)
     }
-    
-    enum firebaseKeys : String {
-        case id = "id"
-        case title = "title"
-        case notes = "notes"
-        case dueDate = "dueDate"
-        case priorityLevel = "priorityLevel" // 0 - Low, 1 - Medium, 2 - High
-        case isCompleted = "isCompleted"
-        case ownerId = "ownerId"
+    func deleteTask(ownerId : String, taskId: String) async throws {
+        try await db.collection(collectionTask).document(ownerId).collection(userTasks).document(taskId).delete()
     }
 }
 
@@ -50,11 +55,13 @@ class syncUnsyncFirebase {
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
     }
+    //MARK:-
+    //MARK: - Uploading all async task to firebase and updating flag into SWiftData
     
     func uploadAllTasks() async {
         
         let descriptor = FetchDescriptor<TaskItem>(predicate: #Predicate<TaskItem> { taskItem in
-            !taskItem.isSynced
+            !taskItem.isSynced && !taskItem.isDeleted
         })
         
         guard let allUnsyncedTasks = try? modelContext.fetch(descriptor) else { return }
@@ -91,6 +98,48 @@ class syncUnsyncFirebase {
         do {
             if let item = try modelContext.fetch(descriptor).first {
                 item.isSynced = true
+            }
+        } catch {
+            let error = error as Error
+            print("FirebaseSync: error \(error.localizedDescription)")
+        }
+    }
+    
+    //MARK: -
+    //MARK: - Deleting task from firebase
+    // which is soft deleted from SwiftData. After firebase deletion will permenent delete from firebase
+    func deleteTasks() async {
+        
+        let descriptor = FetchDescriptor<TaskItem>(predicate: #Predicate<TaskItem> { $0.isDeleted && !$0.isSynced })
+        
+        guard let deletedTasks = try? modelContext.fetch(descriptor) else { return }
+        
+        try? await withThrowingTaskGroup(of:String.self) { group in
+            for task in deletedTasks {
+                let taskId = task.id.uuidString
+                let ownerId = task.ownerId
+                group.addTask {
+                    try await self.firebaseService.deleteTask(ownerId: ownerId, taskId: taskId)
+                    return taskId
+                }
+            }
+            
+            for try await resultTaskID in group {
+                self.deleteTaskFromSwiftData(taskId: resultTaskID)
+            }
+        }
+    }
+    func deleteTaskFromSwiftData(taskId : String) {
+        
+        guard let uuid = UUID(uuidString: taskId) else { return }
+                
+        let descriptor = FetchDescriptor<TaskItem>(predicate: #Predicate<TaskItem> { $0.id == uuid })
+        
+        do {
+            if let item = try modelContext.fetch(descriptor).first
+            {
+                modelContext.delete(item)
+                try? modelContext.save()
             }
         } catch {
             let error = error as Error

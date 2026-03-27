@@ -13,7 +13,7 @@ struct TaskView: View {
     @State var viewModel : TaskViewModel = TaskViewModel()
     
     @Query(filter: #Predicate<TaskItem> { taskItem in
-        !taskItem.isCompleted }) var tasks : [TaskItem]
+        !taskItem.isCompleted && !taskItem.isDeleted }) var tasks : [TaskItem]
     
     @State var isShowAddTask : Bool = false
     @State var isEditTaskItem : Bool = false

@@ -51,6 +51,7 @@ struct HomeView: View {
             let objSyncAsyncFirebase = syncUnsyncFirebase.init(modelContext: modelContext)
             await objSyncAsyncFirebase.uploadAllTasks()
             await objSyncAsyncFirebase.deleteTasks()
+            await objSyncAsyncFirebase.listenerForTaskChanges(userId: getFirebaseUserID())
         }
         .sheet(isPresented: $isShowingAddTask, content: {
             AddTaskView(viewModel: AddTaskViewModel(modelContext: modelContext))

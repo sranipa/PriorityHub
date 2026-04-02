@@ -62,6 +62,7 @@ class GlobalObject {
                 self.isUserLoggedIn = false
                 setUserLoggedIn(status: false)
                 self.currentUser = nil
+                self.selectedTab = 1
                 removeFirebaseUserID()
             }
         })

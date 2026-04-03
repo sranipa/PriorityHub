@@ -48,10 +48,7 @@ struct HomeView: View {
             
         }
         .task {
-            let objSyncAsyncFirebase = syncUnsyncFirebase.init(modelContext: modelContext)
-            await objSyncAsyncFirebase.uploadAllTasks()
-            await objSyncAsyncFirebase.deleteTasks()
-            await objSyncAsyncFirebase.listenerForTaskChanges(userId: getFirebaseUserID())
+            await syncAllDataWithFirebase()
         }
         .sheet(isPresented: $isShowingAddTask, content: {
             AddTaskView(viewModel: AddTaskViewModel(modelContext: modelContext))
@@ -59,6 +56,28 @@ struct HomeView: View {
 //        .fullScreenCover(isPresented: $isShowingAddTask) {
 //            AddTaskView()
 //        }
+    }
+    
+    //MARK: -
+    //MARK: - Syncing all SwiftData With Firebase
+    func syncAllDataWithFirebase() async {
+        let firebaseService = syncUnsyncFirebase.init(modelContext: modelContext)
+        let uid = getFirebaseUserID()
+        
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask {
+                await firebaseService.uploadAllTasks()
+            }
+            group.addTask {
+                await firebaseService.uploadAllProjects()
+            }
+            group.addTask {
+                await firebaseService.listenerForTaskChanges(userId: uid)
+            }
+            group.addTask {
+                await firebaseService.uploadAllProjects()
+            }
+        }
     }
 }
 

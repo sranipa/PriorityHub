@@ -83,15 +83,18 @@ class AddTaskViewModel {
     //MARK: -
     //MARK: - Add New Project
     func addNewProject(completion: @escaping() -> Void) {
-        let newProject : Project = Project(name: projectName)
-        modelContext.insert(newProject)
-        do {
-            try  modelContext.save()
-            selectedProject = newProject
-            projects.append(newProject)
-            completion()
-        } catch {
-            print("AddTaskViewModel - Failed To Save Task: \(error.localizedDescription)")
+        if let uid = getFirebaseUserID() {
+            let newProject : Project = Project(name: projectName, ownerId: uid)
+            modelContext.insert(newProject)
+            do {
+                try  modelContext.save()
+                selectedProject = newProject
+                projects.append(newProject)
+                firebaseSync(isForProject: true)
+                completion()
+            } catch {
+                print("AddTaskViewModel - Failed To Save Task: \(error.localizedDescription)")
+            }
         }
     }
     //MARK: -
@@ -107,7 +110,7 @@ class AddTaskViewModel {
             
             do {
                 try modelContext.save()
-                firebaseSync()
+                firebaseSync(isForProject: false)
                 completion() // Here we will return completion so In View we can dismiss sheet
             } catch {
                 print("AddTaskViewModel - Failed To Save Task: \(error.localizedDescription)")
@@ -129,7 +132,7 @@ class AddTaskViewModel {
                 modelContext.insert(newTask)
                 do {
                     try modelContext.save()
-                    firebaseSync()
+                    firebaseSync(isForProject: false)
                     completion() // Here we will return completion so In View we can dismiss sheet
                 } catch {
                     print("AddTaskViewModel - Failed To Save Task: \(error.localizedDescription)")
@@ -139,9 +142,16 @@ class AddTaskViewModel {
             AlertManager.shared.showAlert(title: "ALERT!", message: "PLEASE_ENTER_TASK_TITLE")
         }
     }
-    func firebaseSync() {
-        Task {
-            await syncUnsyncFirebase.init(modelContext: modelContext).uploadAllTasks()
+    func firebaseSync(isForProject:Bool) {
+        let objSyncAsync = syncUnsyncFirebase.init(modelContext: modelContext)
+        if isForProject {
+            Task {
+                await objSyncAsync.uploadAllProjects()
+            }
+        } else {
+            Task {
+                await objSyncAsync.uploadAllTasks()
+            }
         }
     }
     
@@ -174,8 +184,8 @@ class AddTaskViewModel {
             let project = try modelContext.fetch(descriptor)
             
             //If not found then we will add one
-            if project.isEmpty {
-                let defaultProject = Project.init(name: DefaultProjectName)
+            if project.isEmpty, let uid = getFirebaseUserID() {
+                let defaultProject = Project.init(name: DefaultProjectName, ownerId: uid)
                 modelContext.insert(defaultProject)
                 try modelContext.save()
             }

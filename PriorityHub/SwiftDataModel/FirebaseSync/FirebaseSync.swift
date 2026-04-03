@@ -25,10 +25,17 @@ final actor firebaseServices : Sendable {
         case priorityLevel = "priorityLevel" // 0 - Low, 1 - Medium, 2 - High
         case isCompleted = "isCompleted"
         case ownerId = "ownerId"
+        case projectId = "projectID"
+        case projectName = "projectName"
+        case projectColor = "projectColor"
     }
-    let collectionTask : String = "tasks"
-    let userTasks : String = "userTasks"
+    let collectionTask: String = "tasks"
+    let userTasks: String = "userTasks"
+    let collectionProject: String = "projects"
+    let userProjects: String = "userProjects"
     
+    //MARK: -
+    //MARK: - For Tasks
     func uploadTask(taskModel: TaskTansferModel) async throws {
         
         let dictTask : [String : Any] = [firebaseKeys.id.rawValue : taskModel.id,
@@ -39,7 +46,11 @@ final actor firebaseServices : Sendable {
                                          firebaseKeys.isCompleted.rawValue : taskModel.isCompleted,
                                          firebaseKeys.ownerId.rawValue : taskModel.ownerId]
         
-        try await db.collection(collectionTask).document(taskModel.ownerId).collection(userTasks).document(taskModel.id).setData(dictTask, merge: true)
+        try await db.collection(collectionTask)
+            .document(taskModel.ownerId)
+            .collection(userTasks)
+            .document(taskModel.id)
+            .setData(dictTask, merge: true)
     }
     func deleteTask(ownerId : String, taskId: String) async throws {
         try await db.collection(collectionTask).document(ownerId).collection(userTasks).document(taskId).delete()
@@ -79,6 +90,20 @@ final actor firebaseServices : Sendable {
             }
         }
     }
+    //MARK: -
+    //MARK: - For Projects
+    func uploadProject(projectModel: ProjectTrasferModel) async throws {
+        
+        let data : [String : Any] = [firebaseKeys.projectId.rawValue : projectModel.id,
+                                     firebaseKeys.projectName.rawValue : projectModel.name,
+                                     firebaseKeys.ownerId.rawValue : projectModel.ownerId,
+                                     firebaseKeys.projectColor.rawValue : projectModel.color]
+        try await db.collection(collectionProject)
+            .document(projectModel.ownerId)
+            .collection(userProjects)
+            .document(projectModel.id)
+            .setData(data, merge: true)
+    }
 }
 
 @Observable
@@ -114,8 +139,8 @@ class syncUnsyncFirebase {
                                                  ownerId: taskItem.ownerId)
                 
                 group.addTask {
-                        try await self.firebaseService.uploadTask(taskModel: taskModel)
-                        return taskModel.id
+                    try await self.firebaseService.uploadTask(taskModel: taskModel)
+                    return taskModel.id
                 }
             }
             
@@ -167,7 +192,7 @@ class syncUnsyncFirebase {
     func deleteTaskFromSwiftData(taskId : String) {
         
         guard let uuid = UUID(uuidString: taskId) else { return }
-                
+        
         let descriptor = FetchDescriptor<TaskItem>(predicate: #Predicate<TaskItem> { $0.id == uuid })
         
         do {
@@ -241,5 +266,44 @@ class syncUnsyncFirebase {
         }
         
         try? modelContext.save()
+    }
+    
+    //MARK: -
+    //MARK: - uploading all projects to firebase and updating isSynced flag
+    func uploadAllProjects() async {
+        let descriptor = FetchDescriptor<Project>(predicate: #Predicate<Project>{
+            !$0.isSynced
+        })
+        
+        guard let allUnsyncedProjects = try? modelContext.fetch(descriptor) else { return }
+        
+        try? await withThrowingTaskGroup(of:String.self) { group in
+            
+            for project in allUnsyncedProjects {
+                let projectModel = ProjectTrasferModel(id: project.id.uuidString,
+                                                       name: project.name,
+                                                       ownerId: project.ownerId,
+                                                       color: project.color)
+                group.addTask {
+                    try await self.firebaseService.uploadProject(projectModel: projectModel)
+                    return projectModel.id
+                }
+            }
+            
+            for try await projectId in group {
+                self.syncProject(projectId: projectId)
+            }
+        }
+    }
+    func syncProject(projectId: String) {
+        guard let id = UUID(uuidString: projectId) else { return }
+        let descriptor = FetchDescriptor<Project>(predicate:#Predicate<Project>{ $0.id == id })
+        
+        let project = try? modelContext.fetch(descriptor).first
+        
+        if let project = project {
+            project.isSynced = true
+            try? modelContext.save()
+        }
     }
 }

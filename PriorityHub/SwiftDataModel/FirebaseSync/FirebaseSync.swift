@@ -104,6 +104,12 @@ final actor firebaseServices : Sendable {
             .document(projectModel.id)
             .setData(data, merge: true)
     }
+    func deleteProject(ownerId: String, projectId: String) async throws {
+        try await db.collection(collectionProject)
+            .document(ownerId)
+            .collection(userProjects)
+            .document(projectId).delete()
+    }
 }
 
 @Observable
@@ -277,33 +283,146 @@ class syncUnsyncFirebase {
         
         guard let allUnsyncedProjects = try? modelContext.fetch(descriptor) else { return }
         
-        try? await withThrowingTaskGroup(of:String.self) { group in
-            
-            for project in allUnsyncedProjects {
-                let projectModel = ProjectTrasferModel(id: project.id.uuidString,
-                                                       name: project.name,
-                                                       ownerId: project.ownerId,
-                                                       color: project.color)
-                group.addTask {
-                    try await self.firebaseService.uploadProject(projectModel: projectModel)
-                    return projectModel.id
+        do {
+            try await withThrowingTaskGroup(of:(String, Bool).self) { group in
+                
+                for project in allUnsyncedProjects {
+                    if project.isProjectDelete {
+                        let projectId : String = project.id.uuidString
+                        let ownerId : String = project.ownerId
+                        group.addTask {
+                            try await self.firebaseService.deleteProject(ownerId: ownerId, projectId: projectId)
+                            return ((projectId, true))
+                        }
+                    } else {
+                        let projectModel = ProjectTrasferModel(id: project.id.uuidString,
+                                                               name: project.name,
+                                                               ownerId: project.ownerId,
+                                                               color: project.color)
+                        group.addTask {
+                            try await self.firebaseService.uploadProject(projectModel: projectModel)
+                            return ((projectModel.id, false))
+                        }
+                    }
+                }
+                
+                for try await (projectId, isProjectDeleted) in group {
+                    self.markAsSyncProject(projectId: projectId, isProjectDeleted: isProjectDeleted)
                 }
             }
-            
-            for try await projectId in group {
-                self.syncProject(projectId: projectId)
-            }
+        } catch {
+            let error = error as Error
+            print("FirebaseSync Project : \(error.localizedDescription)")
         }
     }
-    func syncProject(projectId: String) {
+    func markAsSyncProject(projectId: String, isProjectDeleted: Bool) {
         guard let id = UUID(uuidString: projectId) else { return }
         let descriptor = FetchDescriptor<Project>(predicate:#Predicate<Project>{ $0.id == id })
         
         let project = try? modelContext.fetch(descriptor).first
         
-        if let project = project {
+        guard let project else { return }
+        
+        if isProjectDeleted {
+            modelContext.delete(project)
+        } else {
             project.isSynced = true
-            try? modelContext.save()
+        }
+        try? modelContext.save()
+    }
+}
+/* GCD & OperationQueue for multitasking - Example for learning purpose only
+class GCDLearing {
+    let db = Firestore.firestore()
+   
+    static func uploadAllTasksLegacyUsingDispatchGroup(modelContext:ModelContext) {
+        let descriptor = FetchDescriptor<TaskItem>(predicate: #Predicate<TaskItem>{ !$0.isSynced })
+        
+        guard let allUnsyncedTasks  = try? modelContext.fetch(descriptor) else { return }
+        let group = DispatchGroup()
+        
+        for taskItem in allUnsyncedTasks {
+            
+            group.enter()
+            
+            let taskModel : [String : Any] = ["id" : taskItem.id.uuidString,
+                                              "title" : taskItem.title,
+                                              "notes" : taskItem.notes,
+                                              "dueDate" : taskItem.dueDate,
+                                              "priorityLevel" : taskItem.priorityLevel,
+                                              "isCompleted" : taskItem.isCompleted,
+                                              "ownerId" : taskItem.ownerId]
+            
+            
+            Firestore.firestore().collection("tasks").document(taskItem.ownerId).collection("userTasks").document(taskItem.id.uuidString).setData(taskModel)
+            
+            
+            group.leave()
+        }
+        group.notify(queue: .main){
+            print("All Task updated")
+        }
+    }
+    static func uploadAllTasksLegacyUsingOperationQueue(modelContext: ModelContext) {
+        
+        var allTasksToUpload : [TaskItem] = []
+        
+        let operationQueue = OperationQueue()
+        
+//        let fetchData = BlockOperation {
+            let descriptor = FetchDescriptor<TaskItem>(predicate: #Predicate<TaskItem>{ !$0.isSynced })
+            
+           
+            allTasksToUpload  = (try? modelContext.fetch(descriptor)) ?? []
+//        }
+        
+        let sendData = allTasksToUpload.map { taskItem in
+            return BlockOperation {
+                let taskModel : [String : Any] = ["id" : taskItem.id.uuidString,
+                                                  "title" : taskItem.title,
+                                                  "notes" : taskItem.notes,
+                                                  "dueDate" : taskItem.dueDate,
+                                                  "priorityLevel" : taskItem.priorityLevel,
+                                                  "isCompleted" : taskItem.isCompleted,
+                                                  "ownerId" : taskItem.ownerId]
+                
+                
+                Firestore.firestore().collection("tasks").document(taskItem.ownerId).collection("userTasks").document(taskItem.id.uuidString).setData(taskModel)
+            }
+        }
+        
+//        for tempOperation in sendData {
+//            tempOperation.addDependency(fetchData)
+//        }
+//        operationQueue.addOperation(fetchData)
+        operationQueue.addOperations(sendData, waitUntilFinished: false)
+        
+        operationQueue.cancelAllOperations()
+    }
+    static func uploadTaskLegacyUsingDefaultQueue(modelContext: ModelContext) {
+        
+        let descriptor = FetchDescriptor<TaskItem>(predicate: #Predicate<TaskItem>{ !$0.isSynced })
+        guard let allUnsyncedTasks  = try? modelContext.fetch(descriptor) else { return }
+        
+        DispatchQueue.global(qos: .background).async {
+            
+            for taskItem in allUnsyncedTasks {
+                let taskModel : [String : Any] = ["id" : taskItem.id.uuidString,
+                                                  "title" : taskItem.title,
+                                                  "notes" : taskItem.notes,
+                                                  "dueDate" : taskItem.dueDate,
+                                                  "priorityLevel" : taskItem.priorityLevel,
+                                                  "isCompleted" : taskItem.isCompleted,
+                                                  "ownerId" : taskItem.ownerId]
+                
+                
+                Firestore.firestore().collection("tasks").document(taskItem.ownerId).collection("userTasks").document(taskItem.id.uuidString).setData(taskModel)
+            }
+            
+            DispatchQueue.main.async {
+                print("Execute successfully")
+            }
         }
     }
 }
+*/

@@ -158,8 +158,8 @@ class AddTaskViewModel {
     //MARK: -
     //MARK: - Fetch All Project
     @MainActor
-    func getAllProjects() { 
-        let descriptor = FetchDescriptor<Project>(sortBy: [SortDescriptor(\Project.name)])
+    func getAllProjects() {
+        let descriptor = FetchDescriptor<Project>(predicate: #Predicate<Project>{!$0.isProjectDelete},sortBy: [SortDescriptor(\Project.name)])
         do {
             projects = try modelContext.fetch(descriptor)
             
@@ -188,6 +188,9 @@ class AddTaskViewModel {
                 let defaultProject = Project.init(name: DefaultProjectName, ownerId: uid)
                 modelContext.insert(defaultProject)
                 try modelContext.save()
+                Task {
+                    await syncUnsyncFirebase(modelContext: modelContext).uploadAllProjects()
+                }
             }
         } catch {
             print("AddTaskViewModel: \(error.localizedDescription)")

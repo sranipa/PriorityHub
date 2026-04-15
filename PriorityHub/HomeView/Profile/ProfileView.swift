@@ -31,6 +31,15 @@ struct ProfileView: View {
                 }
                 
                 Section {
+                    NavigationLink {
+                        ManageProjectsView()
+                    } label: {
+                        Label("MANAGE_PROJECTS", systemImage: "folder")
+                            .foregroundStyle(Color.primary)
+                    }
+                }
+                
+                Section {
                     profileRow(icon: "power", name:String(localized:"LOGOUT"))
                         .onTapGesture {
                             viewModel.showAlertForLogout()

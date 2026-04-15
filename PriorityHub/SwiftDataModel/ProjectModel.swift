@@ -14,7 +14,7 @@ final class Project {
     var name : String
     var isSynced : Bool
     var ownerId : String
-    var isDeleted : Bool
+    var isProjectDelete : Bool
     var color : String
     
     // Relationship: One project can have many tasks
@@ -25,7 +25,7 @@ final class Project {
         self.id = id
         self.name = name
         self.isSynced = false
-        self.isDeleted = false
+        self.isProjectDelete = false
         self.ownerId = ownerId
         self.color = color
         self.tasks = tasks

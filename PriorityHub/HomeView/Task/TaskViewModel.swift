@@ -65,7 +65,7 @@ class TaskViewModel {
     func onDelete(modelContext: ModelContext, taskItem: TaskItem) {
         let strMsg : String = String(localized: "ARE_YOU_SURE_YOU_WANT_TO_DELETE") + " \(taskItem.title)?"
         AlertManager.shared.showAlert(title: String(localized: "ALERT!"), message: strMsg, okTitle: String(localized: "DELETE"),isDestructive: true, okAction: {
-            taskItem.isDeleted = true
+            taskItem.isTaskDelete = true
             taskItem.isSynced = false
 //            modelContext.delete(taskItem)
             try? modelContext.save()

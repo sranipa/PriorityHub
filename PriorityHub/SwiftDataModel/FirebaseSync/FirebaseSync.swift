@@ -127,7 +127,7 @@ class syncUnsyncFirebase {
     func uploadAllTasks() async {
         
         let descriptor = FetchDescriptor<TaskItem>(predicate: #Predicate<TaskItem> { taskItem in
-            !taskItem.isSynced && !taskItem.isDeleted
+            !taskItem.isSynced && !taskItem.isTaskDelete
         })
         
         guard let allUnsyncedTasks = try? modelContext.fetch(descriptor) else { return }
@@ -176,7 +176,7 @@ class syncUnsyncFirebase {
     // which is soft deleted from SwiftData. After firebase deletion will permenent delete from firebase
     func deleteTasks() async {
         
-        let descriptor = FetchDescriptor<TaskItem>(predicate: #Predicate<TaskItem> { $0.isDeleted && !$0.isSynced })
+        let descriptor = FetchDescriptor<TaskItem>(predicate: #Predicate<TaskItem> { $0.isTaskDelete && !$0.isSynced })
         
         guard let deletedTasks = try? modelContext.fetch(descriptor) else { return }
         

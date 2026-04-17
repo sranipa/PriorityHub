@@ -44,7 +44,8 @@ final actor firebaseServices : Sendable {
                                          firebaseKeys.dueDate.rawValue : taskModel.dueDate,
                                          firebaseKeys.priorityLevel.rawValue : taskModel.priorityLevel,
                                          firebaseKeys.isCompleted.rawValue : taskModel.isCompleted,
-                                         firebaseKeys.ownerId.rawValue : taskModel.ownerId]
+                                         firebaseKeys.ownerId.rawValue : taskModel.ownerId,
+                                         firebaseKeys.projectId.rawValue : taskModel.projectId]
         
         try await db.collection(collectionTask)
             .document(taskModel.ownerId)
@@ -54,6 +55,24 @@ final actor firebaseServices : Sendable {
     }
     func deleteTask(ownerId : String, taskId: String) async throws {
         try await db.collection(collectionTask).document(ownerId).collection(userTasks).document(taskId).delete()
+    }
+    func deleteAllTasksRelatedToProject(ownerId: String, projectId: String) {
+        
+        let query = db.collection(collectionTask).document(ownerId).collection(userTasks).whereField(firebaseKeys.projectId.rawValue, isEqualTo: projectId)
+        
+        query.getDocuments { querySnapshot, error in
+            guard let documents = querySnapshot?.documents, !documents.isEmpty else { return }
+            
+            let batch = Firestore.firestore().batch() // self.db.batch()
+            
+            documents.forEach({batch.deleteDocument($0.reference)})
+            
+            batch.commit { error in
+                if error == nil {
+                    print("All Task deleted")
+                }
+            }
+        }
     }
     func startTaskListner(ownerID: String) -> AsyncStream<[TaskTansferModel]> {
         AsyncStream { continuation in
@@ -78,7 +97,8 @@ final actor firebaseServices : Sendable {
                                                 dueDate: dueDate,
                                                 priorityLevel: data[firebaseKeys.priorityLevel.rawValue] as? Int ?? 1,
                                                 isCompleted: data[firebaseKeys.isCompleted.rawValue] as? Bool ?? false,
-                                                ownerId: data[firebaseKeys.id.rawValue] as? String ?? "")
+                                                ownerId: data[firebaseKeys.ownerId.rawValue] as? String ?? "",
+                                                projectId: data[firebaseKeys.projectId.rawValue] as? String ?? "")
                     })
                     continuation.yield(taskItems)
                 }
@@ -109,6 +129,32 @@ final actor firebaseServices : Sendable {
             .document(ownerId)
             .collection(userProjects)
             .document(projectId).delete()
+    }
+    func startProjectListener(ownerId: String) -> AsyncStream<[ProjectTrasferModel]> {
+        AsyncStream { continuation in
+            let listener = db.collection(collectionProject)
+                .document(ownerId).collection(userProjects)
+                .addSnapshotListener { querySnapshot, error in
+                
+                    guard let documents = querySnapshot?.documents else { return }
+                    
+                    let projects = documents.compactMap ({ project -> ProjectTrasferModel? in
+                        let data = project.data()
+                        
+                        return  ProjectTrasferModel(
+                            id: data[firebaseKeys.projectId.rawValue] as? String ?? "",
+                            name: data[firebaseKeys.projectName.rawValue] as? String ?? "",
+                            ownerId: data[firebaseKeys.ownerId.rawValue] as? String ?? "",
+                            color: data[firebaseKeys.projectColor.rawValue] as? String ?? "")
+                    })
+                    continuation.yield(projects)
+            }
+            // Here we create sendable type to firebase listener
+            let box = ListenerBox(listener: listener)
+            continuation.onTermination = {@Sendable _ in
+                box.stop()
+            }
+        }
     }
 }
 
@@ -142,7 +188,8 @@ class syncUnsyncFirebase {
                                                  dueDate: taskItem.dueDate,
                                                  priorityLevel: taskItem.priorityLevel,
                                                  isCompleted: taskItem.isCompleted,
-                                                 ownerId: taskItem.ownerId)
+                                                 ownerId: taskItem.ownerId,
+                                                 projectId: taskItem.project?.id.uuidString ?? "")
                 
                 group.addTask {
                     try await self.firebaseService.uploadTask(taskModel: taskModel)
@@ -235,16 +282,25 @@ class syncUnsyncFirebase {
                         task.dueDate = remoteTask.dueDate
                         task.priorityLevel = remoteTask.priorityLevel
                         task.isCompleted = remoteTask.isCompleted
+                        if task.project == nil && !remoteTask.projectId.isEmpty {
+                            task.project = fetchProject(projectId: remoteTask.projectId)
+                        } else if let projectId = task.project?.id.uuidString {
+                            if projectId != remoteTask.projectId {
+                                task.project = fetchProject(projectId: remoteTask.projectId)
+                            }
+                        }
                     }
                 } else {
                     // Add New task
-                    let newTask = TaskItem(title: remoteTask.title,
+                    let newTask = TaskItem(id: uuid,
+                                           title: remoteTask.title,
                                            notes: remoteTask.notes,
                                            dueDate: remoteTask.dueDate,
                                            priorityLevel: remoteTask.priorityLevel,
                                            ownerId: userId)
                     newTask.isSynced = true
                     newTask.isCompleted = remoteTask.isCompleted
+                    newTask.project = fetchProject(projectId: remoteTask.projectId)
                     
                     modelContext.insert(newTask)
                 }
@@ -256,7 +312,12 @@ class syncUnsyncFirebase {
             reconsile(remoteTasks: remoteTasks, userId: userId)
         }
     }
-    
+    func fetchProject(projectId:String) -> Project? {
+        guard let uuid = UUID(uuidString: projectId) else { return nil }
+        let descriptor = FetchDescriptor<Project>(predicate:#Predicate<Project>{$0.id == uuid})
+        
+        return try? modelContext.fetch(descriptor).first
+    }
     func reconsile(remoteTasks:[TaskTansferModel], userId: String) {
         
         let descriptor = FetchDescriptor<TaskItem>(predicate: #Predicate<TaskItem>{ $0.isSynced == true && $0.ownerId == userId })
@@ -292,6 +353,7 @@ class syncUnsyncFirebase {
                         let ownerId : String = project.ownerId
                         group.addTask {
                             try await self.firebaseService.deleteProject(ownerId: ownerId, projectId: projectId)
+                            await self.firebaseService.deleteAllTasksRelatedToProject(ownerId: ownerId, projectId: projectId)
                             return ((projectId, true))
                         }
                     } else {
@@ -329,6 +391,38 @@ class syncUnsyncFirebase {
             project.isSynced = true
         }
         try? modelContext.save()
+    }
+    
+    func listenerForProjectChanges(userId: String?) async {
+        guard let userId = userId else { return }
+        
+        let stream = await firebaseService.startProjectListener(ownerId: userId)
+        
+        for await projects in stream {
+            for remoteProject in projects {
+                guard let uuid = UUID(uuidString: remoteProject.id) else { continue }
+                
+                let descriptor = FetchDescriptor<Project>(predicate: #Predicate<Project>{ $0.id == uuid })
+                
+                let project = try? modelContext.fetch(descriptor).first
+                
+                if let localProject = project {
+                    // Update Here
+                    localProject.name = remoteProject.name
+                    localProject.color = remoteProject.color
+                    localProject.ownerId = remoteProject.ownerId
+                } else {
+                    // Add New
+                    let newProject = Project(id: uuid,
+                                             name: remoteProject.name,
+                                             ownerId: userId,
+                                             color: remoteProject.color)
+                    modelContext.insert(newProject)
+                }
+                
+                try? modelContext.save()
+            }
+        }
     }
 }
 /* GCD & OperationQueue for multitasking - Example for learning purpose only

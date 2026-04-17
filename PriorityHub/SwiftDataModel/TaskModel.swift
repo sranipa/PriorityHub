@@ -56,5 +56,6 @@ struct TaskTansferModel : Sendable {
     var dueDate : Date
     var priorityLevel : Int // 0 - Low, 1 - Medium, 2 - High
     var isCompleted : Bool
-    var ownerId : String 
+    var ownerId : String
+    var projectId : String
 }

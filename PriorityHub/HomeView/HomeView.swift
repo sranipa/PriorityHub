@@ -77,6 +77,9 @@ struct HomeView: View {
             group.addTask {
                 await firebaseService.uploadAllProjects()
             }
+            group.addTask {
+                await firebaseService.listenerForProjectChanges(userId: uid)
+            }
         }
     }
 }

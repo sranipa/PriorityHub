@@ -154,6 +154,16 @@
     "Dashboard View" : {
 
     },
+    "DEFAULT_PROJECT_MESSAGE" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Default Project, You can't Edit or Delete it."
+          }
+        }
+      }
+    },
     "DELETE" : {
       "localizations" : {
         "en" : {

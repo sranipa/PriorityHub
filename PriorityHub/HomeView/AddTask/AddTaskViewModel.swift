@@ -186,6 +186,7 @@ class AddTaskViewModel {
             //If not found then we will add one
             if project.isEmpty, let uid = getFirebaseUserID() {
                 let defaultProject = Project.init(name: DefaultProjectName, ownerId: uid)
+                defaultProject.isDefaultProject = true
                 modelContext.insert(defaultProject)
                 try modelContext.save()
                 Task {

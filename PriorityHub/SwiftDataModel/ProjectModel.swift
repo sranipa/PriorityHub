@@ -15,6 +15,7 @@ final class Project {
     var isSynced : Bool
     var ownerId : String
     var isProjectDelete : Bool
+    var isDefaultProject : Bool
     var color : String
     
     // Relationship: One project can have many tasks
@@ -26,6 +27,7 @@ final class Project {
         self.name = name
         self.isSynced = false
         self.isProjectDelete = false
+        self.isDefaultProject = false
         self.ownerId = ownerId
         self.color = color
         self.tasks = tasks
@@ -36,5 +38,6 @@ struct ProjectTrasferModel : Codable {
     var id: String
     var name : String
     var ownerId : String
+    var isDefaultProject : Bool
     var color : String
 }

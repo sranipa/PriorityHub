@@ -28,6 +28,7 @@ final actor firebaseServices : Sendable {
         case projectId = "projectID"
         case projectName = "projectName"
         case projectColor = "projectColor"
+        case defaultProject = "isDefaultProject"
     }
     let collectionTask: String = "tasks"
     let userTasks: String = "userTasks"
@@ -117,6 +118,7 @@ final actor firebaseServices : Sendable {
         let data : [String : Any] = [firebaseKeys.projectId.rawValue : projectModel.id,
                                      firebaseKeys.projectName.rawValue : projectModel.name,
                                      firebaseKeys.ownerId.rawValue : projectModel.ownerId,
+                                     firebaseKeys.defaultProject.rawValue : projectModel.isDefaultProject,
                                      firebaseKeys.projectColor.rawValue : projectModel.color]
         try await db.collection(collectionProject)
             .document(projectModel.ownerId)
@@ -145,6 +147,7 @@ final actor firebaseServices : Sendable {
                             id: data[firebaseKeys.projectId.rawValue] as? String ?? "",
                             name: data[firebaseKeys.projectName.rawValue] as? String ?? "",
                             ownerId: data[firebaseKeys.ownerId.rawValue] as? String ?? "",
+                            isDefaultProject: data[firebaseKeys.defaultProject.rawValue] as? Bool ?? false,
                             color: data[firebaseKeys.projectColor.rawValue] as? String ?? "")
                     })
                     continuation.yield(projects)
@@ -360,6 +363,7 @@ class syncUnsyncFirebase {
                         let projectModel = ProjectTrasferModel(id: project.id.uuidString,
                                                                name: project.name,
                                                                ownerId: project.ownerId,
+                                                               isDefaultProject: project.isDefaultProject,
                                                                color: project.color)
                         group.addTask {
                             try await self.firebaseService.uploadProject(projectModel: projectModel)
@@ -411,6 +415,7 @@ class syncUnsyncFirebase {
                     localProject.name = remoteProject.name
                     localProject.color = remoteProject.color
                     localProject.ownerId = remoteProject.ownerId
+                    localProject.isDefaultProject = remoteProject.isDefaultProject
                 } else {
                     // Add New
                     let newProject = Project(id: uuid,

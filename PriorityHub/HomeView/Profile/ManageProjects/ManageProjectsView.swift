@@ -45,22 +45,30 @@ struct ManageProjectsView: View {
     //MARK: - Design Row Here
     @ViewBuilder
     func viewForRow(projectItem: Project) -> some View {
-        VStack {
+        VStack(alignment: .leading, spacing: 5) {
             Text(projectItem.name)
+            
+            if projectItem.isDefaultProject {
+                Text("DEFAULT_PROJECT_MESSAGE")
+                    .font(.caption2)
+                    .foregroundStyle(Color.red)
+            }
         }
         .id(projectItem.id)
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-            Button {
-                viewModel.deleteProject(modelContext: modelContext, projectItem: projectItem)
-            } label: {
-                Label("DELETE", systemImage: "trash")
-            }.tint(.red)
-            
-            Button {
-                editProjectItem = projectItem
-            } label: {
-                Label("EDIT", systemImage: "square.and.pencil")
-            }.tint(.blue)
+            if !projectItem.isDefaultProject {
+                Button {
+                    viewModel.deleteProject(modelContext: modelContext, projectItem: projectItem)
+                } label: {
+                    Label("DELETE", systemImage: "trash")
+                }.tint(.red)
+                
+                Button {
+                    editProjectItem = projectItem
+                } label: {
+                    Label("EDIT", systemImage: "square.and.pencil")
+                }.tint(.blue)
+            }
         }
     }
 }

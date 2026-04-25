@@ -15,44 +15,58 @@ struct AddTaskView: View {
     @State var viewModel : AddTaskViewModel
     @FocusState private var focusField : AddTaskField?
     
-    @State var isShowAddProject : Bool = false
+    @Query(FetchDescriptor<Project>(predicate: #Predicate<Project>{$0.isProjectSelected})) var selectedProjects : [Project]
     
     var body: some View {
-        Form {
-            Text(viewModel.HeaderTitle)
-                .font(.title)
-                .padding(.top)
-                .bold()
-            
-            TextField("TITLE", text: $viewModel.title)
-                .textInputAutocapitalization(.sentences)
-                .autocorrectionDisabled()
-                .focused($focusField, equals: .title)
-                .submitLabel(.next)
-                .onSubmit {
-                    focusField = .note
-                }
-            
-            TextField("NOTE", text: $viewModel.note)
-                .autocorrectionDisabled()
-                .textInputAutocapitalization(.sentences)
-                .focused($focusField, equals: .note)
-                .submitLabel(.next)
-                .onSubmit {
-                    focusField = .none
-                }
-            
-            viewForSelectProject
-            
-            viewForDatePicker
-            
-            viewForPriorityLevel
-            
-            viewForSubmitButton
+        NavigationStack {
+            Form {
+//                Text(viewModel.HeaderTitle)
+//                    .font(.title)
+//                    .padding(.top)
+//                    .bold()
+                
+                TextField("TITLE", text: $viewModel.title)
+                    .textInputAutocapitalization(.sentences)
+                    .autocorrectionDisabled()
+                    .focused($focusField, equals: .title)
+                    .submitLabel(.next)
+                    .onSubmit {
+                        focusField = .note
+                    }
+                
+                TextField("NOTE", text: $viewModel.note)
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.sentences)
+                    .focused($focusField, equals: .note)
+                    .submitLabel(.next)
+                    .onSubmit {
+                        focusField = .none
+                    }
+                
+                viewForSelectProject
+                    .onAppear {
+                        // Here we first time display edit item's default project.
+                        // Then it will display default selected project
+                        // For Add Item it should be display default project
+                        if viewModel.isFromEdit && viewModel.isEditFirstTime {
+                            viewModel.isEditFirstTime = false
+                        } else {
+                            viewModel.selectedProject = selectedProjects.first
+                        }
+                    }
+                
+                viewForDatePicker
+                
+                viewForPriorityLevel
+                
+                viewForSubmitButton
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle(viewModel.HeaderTitle)
+            .onAppear {
+                viewModel.addDefaultProject()
+            }
         }
-        .sheet(isPresented: $isShowAddProject, content: {
-            viewForAddNewProject
-        })
     }
     //MARK: -
     //MARK: - ViewForSubmit Button
@@ -107,77 +121,18 @@ struct AddTaskView: View {
             .background(Color.clear)
     }
     
-    //MARK: -
-    //MARK: - Project Selection Picker & Add New Project View
     var viewForSelectProject : some View {
-        HStack(spacing:5) {
-            Text(String(localized: "SELECT_PROJECT"))
-                .foregroundStyle(Color.primary)
-            
-            Spacer()
-            
-            Menu {
-                // 1. The Selectable Projects
-                ForEach(viewModel.projects) { project in
-                    Button {
-                        withAnimation(.snappy) {
-                            viewModel.selectedProject = project
-                        }
-                    } label: {
-                        HStack {
-                            Text(project.name)
-                            if viewModel.selectedProject?.id == project.id {
-                                Image(systemName: "checkmark")
-                            }
-                        }
-                    }
-                }
+        NavigationLink {
+            ManageProjectsView()
+        } label: {
+            HStack {
+                Text("SELECT_PROJECT")
                 
-                Divider()
+                Spacer()
                 
-                // 2. The Action Button For Add New Project
-                Button(action: {
-                    isShowAddProject.toggle()
-                }, label: {
-                    Label(String(localized: "ADD_NEW_PROJECT"), systemImage: "plus")
-                })
-                
-            } label: {
-                // 3. The Custom "Picker" Label
-                    HStack(spacing:5) {
-                    Text(viewModel.selectedProject?.name ?? String(localized: "SELECT_PROJECT"))
-                        .foregroundStyle(viewModel.selectedProject == nil ? Color.gray : Color.primary)
-                    
-                    Image(systemName: "chevron.up.chevron.down")
-                        .font(.caption)
-                }
-                
+                Text(viewModel.selectedProject?.name ?? String(localized: "SELECT_PROJECT"))
+                    .foregroundStyle(viewModel.selectedProject == nil ? Color.gray : Color.primary)
             }
-            .animation(.spring(duration: 0.3), value: viewModel.selectedProject?.id)
-        }
-    }
-    var viewForAddNewProject : some View {
-        Form {
-            Text("ADD_NEW_PROJECT")
-                .font(.title)
-                .padding(.top)
-                .bold()
-            
-            TextField("NAME", text: $viewModel.projectName)
-                .autocorrectionDisabled()
-                .textInputAutocapitalization(.sentences)
-            
-            Button {
-                viewModel.addNewProject(completion: {
-                    isShowAddProject.toggle()
-                })
-            } label: {
-                Text("SUBMIT")
-                    .frame(maxWidth:.infinity)
-            }
-            .buttonStyle(.borderedProminent)
-            .disabled(viewModel.isAddProjectSubmitDisable)
-
         }
     }
 }

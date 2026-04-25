@@ -10,7 +10,8 @@ import SwiftUI
 struct HomeView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(GlobalObject.self) var globalObject
-    @State var isShowingAddTask : Bool = false
+    @State private var viewModel = HomeViewModel()
+    
     var body: some View {
         @Bindable var globalObject = globalObject
          
@@ -35,7 +36,7 @@ struct HomeView: View {
             }
             
             Button {
-                isShowingAddTask.toggle()
+                viewModel.isShowingAddTask.toggle()
             } label: {
                 Image(systemName: "plus")
                             .font(.title.bold())
@@ -48,39 +49,14 @@ struct HomeView: View {
             
         }
         .task {
-            await syncAllDataWithFirebase()
+            await viewModel.syncAllDataWithFirebase(modelContext: modelContext)
         }
-        .sheet(isPresented: $isShowingAddTask, content: {
+        .sheet(isPresented: $viewModel.isShowingAddTask, content: {
             AddTaskView(viewModel: AddTaskViewModel(modelContext: modelContext))
         })
 //        .fullScreenCover(isPresented: $isShowingAddTask) {
 //            AddTaskView()
 //        }
-    }
-    
-    //MARK: -
-    //MARK: - Syncing all SwiftData With Firebase
-    func syncAllDataWithFirebase() async {
-        let firebaseService = syncUnsyncFirebase.init(modelContext: modelContext)
-        let uid = getFirebaseUserID()
-        
-        await withTaskGroup(of: Void.self) { group in
-            group.addTask {
-                await firebaseService.uploadAllTasks()
-            }
-            group.addTask {
-                await firebaseService.deleteTasks()
-            }
-            group.addTask {
-                await firebaseService.listenerForTaskChanges(userId: uid)
-            }
-            group.addTask {
-                await firebaseService.uploadAllProjects()
-            }
-            group.addTask {
-                await firebaseService.listenerForProjectChanges(userId: uid)
-            }
-        }
     }
 }
 

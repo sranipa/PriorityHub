@@ -17,8 +17,7 @@ class AddTaskViewModel {
         self.modelContext = modelContext
         self.isFromEdit = isFromEdit
         self.editTaskItem = editTaskItem
-        self.addDefaultProject() // There is no any project we will add default "Inbox" project
-        self.getAllProjects() // Fetch all saved projects
+        
         if self.isFromEdit {
             self.title = editTaskItem?.title ?? ""
             self.note = editTaskItem?.notes ?? ""
@@ -36,17 +35,14 @@ class AddTaskViewModel {
     }
     // For Edit Task
     var isFromEdit : Bool = false
+    var isEditFirstTime : Bool = true
     var editTaskItem : TaskItem? = nil
-    
-    // All Saved projects
-    var projects : [Project] = []
     
     // This is for Add New Project
     var projectName : String = ""
     var isAddProjectSubmitDisable : Bool {
         projectName.trimmingCharacters(in: .whitespaces).isEmpty
     }
-    let DefaultProjectName: String = "Inbox"
     
     // Selected Project -
     // By default we will save first project from Projects Array
@@ -80,23 +76,6 @@ class AddTaskViewModel {
         return !title.isEmpty
     }
     
-    //MARK: -
-    //MARK: - Add New Project
-    func addNewProject(completion: @escaping() -> Void) {
-        if let uid = getFirebaseUserID() {
-            let newProject : Project = Project(name: projectName, ownerId: uid)
-            modelContext.insert(newProject)
-            do {
-                try  modelContext.save()
-                selectedProject = newProject
-                projects.append(newProject)
-                firebaseSync(isForProject: true)
-                completion()
-            } catch {
-                print("AddTaskViewModel - Failed To Save Task: \(error.localizedDescription)")
-            }
-        }
-    }
     //MARK: -
     //MARK: - Update taskItem
     func updateTask(completion: @escaping() -> Void) {
@@ -154,39 +133,18 @@ class AddTaskViewModel {
             }
         }
     }
-    
     //MARK: -
-    //MARK: - Fetch All Project
-    @MainActor
-    func getAllProjects() {
-        let descriptor = FetchDescriptor<Project>(predicate: #Predicate<Project>{!$0.isProjectDelete},sortBy: [SortDescriptor(\Project.name)])
-        do {
-            projects = try modelContext.fetch(descriptor)
-            
-            // Selected project is nil. then we will set INBOX to default one.
-            if let firstProject = projects.first(where: {$0.name == DefaultProjectName}), selectedProject == nil
-            {
-                selectedProject = firstProject
-            }
-        } catch {
-            print("AddTaskViewModel: \(error.localizedDescription)")
-        }
-    }
-    //MARK: -
-    //MARK: - We will add default project if any project is not available.
+    //MARK: - Adding Default Project
     func addDefaultProject() {
-        let predicate = #Predicate<Project> { project in
-            project.name == DefaultProjectName
-        }
-        let descriptor = FetchDescriptor(predicate: predicate, sortBy: [SortDescriptor(\Project.name)])
+        let descriptor = FetchDescriptor<Project>(predicate:#Predicate{$0.isDefaultProject})
         do {
-            // Fetch "Inbox" project from database
             let project = try modelContext.fetch(descriptor)
             
             //If not found then we will add one
             if project.isEmpty, let uid = getFirebaseUserID() {
-                let defaultProject = Project.init(name: DefaultProjectName, ownerId: uid)
+                let defaultProject = Project.init(name: "Inbox", ownerId: uid)
                 defaultProject.isDefaultProject = true
+                defaultProject.isProjectSelected = true
                 modelContext.insert(defaultProject)
                 try modelContext.save()
                 Task {

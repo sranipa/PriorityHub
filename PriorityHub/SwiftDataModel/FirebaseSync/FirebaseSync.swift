@@ -29,6 +29,7 @@ final actor firebaseServices : Sendable {
         case projectName = "projectName"
         case projectColor = "projectColor"
         case defaultProject = "isDefaultProject"
+        case isProjectSelected = "isProjectSelected"
     }
     let collectionTask: String = "tasks"
     let userTasks: String = "userTasks"
@@ -119,6 +120,7 @@ final actor firebaseServices : Sendable {
                                      firebaseKeys.projectName.rawValue : projectModel.name,
                                      firebaseKeys.ownerId.rawValue : projectModel.ownerId,
                                      firebaseKeys.defaultProject.rawValue : projectModel.isDefaultProject,
+                                     firebaseKeys.isProjectSelected.rawValue : projectModel.isProjectSelected,
                                      firebaseKeys.projectColor.rawValue : projectModel.color]
         try await db.collection(collectionProject)
             .document(projectModel.ownerId)
@@ -148,6 +150,7 @@ final actor firebaseServices : Sendable {
                             name: data[firebaseKeys.projectName.rawValue] as? String ?? "",
                             ownerId: data[firebaseKeys.ownerId.rawValue] as? String ?? "",
                             isDefaultProject: data[firebaseKeys.defaultProject.rawValue] as? Bool ?? false,
+                            isProjectSelected: data[firebaseKeys.isProjectSelected.rawValue] as? Bool ?? false,
                             color: data[firebaseKeys.projectColor.rawValue] as? String ?? "")
                     })
                     continuation.yield(projects)
@@ -364,6 +367,7 @@ class syncUnsyncFirebase {
                                                                name: project.name,
                                                                ownerId: project.ownerId,
                                                                isDefaultProject: project.isDefaultProject,
+                                                               isProjectSelected: project.isProjectSelected,
                                                                color: project.color)
                         group.addTask {
                             try await self.firebaseService.uploadProject(projectModel: projectModel)
@@ -416,18 +420,38 @@ class syncUnsyncFirebase {
                     localProject.color = remoteProject.color
                     localProject.ownerId = remoteProject.ownerId
                     localProject.isDefaultProject = remoteProject.isDefaultProject
+                    localProject.isProjectSelected = remoteProject.isProjectSelected
                 } else {
                     // Add New
                     let newProject = Project(id: uuid,
                                              name: remoteProject.name,
                                              ownerId: userId,
                                              color: remoteProject.color)
+                    newProject.isDefaultProject = remoteProject.isDefaultProject
+                    newProject.isProjectSelected = remoteProject.isProjectSelected
                     modelContext.insert(newProject)
                 }
                 
                 try? modelContext.save()
             }
+            self.reconsileProjects(remoteProjects: projects, userId: userId)
         }
+    }
+    func reconsileProjects(remoteProjects: [ProjectTrasferModel], userId : String) {
+        
+        let descriptor = FetchDescriptor<Project>(predicate:#Predicate<Project>{$0.isSynced})
+        
+        guard let localProjects = (try? modelContext.fetch(descriptor)) else { return }
+        
+        let remoteIds  = Set(remoteProjects.map{ $0.id })
+        
+        for project in localProjects {
+            if !remoteIds.contains(project.id.uuidString) {
+                modelContext.delete(project)
+            }
+        }
+        
+        try? modelContext.save()
     }
 }
 /* GCD & OperationQueue for multitasking - Example for learning purpose only

@@ -34,6 +34,9 @@ struct ManageProjectsView: View {
             .sheet(item: $editProjectItem, content: { projectItem in
                 AddNewProjectView(viewModel: AddNewProjectViewModel(isForEdit: true, modelContext: modelContext, editProjectItem: projectItem))
             })
+            .onAppear {
+                viewModel.addDefaultProject(modelContext: modelContext)
+            }
     }
     var viewForProjectList : some View {
         List {
@@ -45,14 +48,26 @@ struct ManageProjectsView: View {
     //MARK: - Design Row Here
     @ViewBuilder
     func viewForRow(projectItem: Project) -> some View {
-        VStack(alignment: .leading, spacing: 5) {
-            Text(projectItem.name)
-            
-            if projectItem.isDefaultProject {
-                Text("DEFAULT_PROJECT_MESSAGE")
-                    .font(.caption2)
-                    .foregroundStyle(Color.red)
+        HStack {
+            VStack(alignment: .leading, spacing: 5) {
+                Text(projectItem.name)
+                
+                if projectItem.isDefaultProject {
+                    Text("DEFAULT_PROJECT_MESSAGE")
+                        .font(.caption2)
+                        .foregroundStyle(Color.red)
+                }
             }
+            
+            Spacer()
+            
+            if projectItem.isProjectSelected {
+                Image(systemName: "checkmark")
+            }
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            viewModel.selectedProject(modelContext: modelContext, project: projectItem)
         }
         .id(projectItem.id)
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {

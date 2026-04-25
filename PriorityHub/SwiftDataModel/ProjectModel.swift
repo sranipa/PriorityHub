@@ -15,7 +15,8 @@ final class Project {
     var isSynced : Bool
     var ownerId : String
     var isProjectDelete : Bool
-    var isDefaultProject : Bool
+    var isDefaultProject : Bool // It is added by app. So user can't edit or delete it.
+    var isProjectSelected : Bool // User will select project
     var color : String
     
     // Relationship: One project can have many tasks
@@ -28,6 +29,7 @@ final class Project {
         self.isSynced = false
         self.isProjectDelete = false
         self.isDefaultProject = false
+        self.isProjectSelected = false
         self.ownerId = ownerId
         self.color = color
         self.tasks = tasks
@@ -39,5 +41,6 @@ struct ProjectTrasferModel : Codable {
     var name : String
     var ownerId : String
     var isDefaultProject : Bool
+    var isProjectSelected : Bool
     var color : String
 }

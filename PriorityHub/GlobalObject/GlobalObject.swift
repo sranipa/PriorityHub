@@ -17,11 +17,13 @@ class GlobalObject {
     
     // Login Status
     var isUserLoggedIn : Bool = false
+    var firebaseUserId : String? = nil
     var currentUser : ProfileModel?
     private var authStateHandler : AuthStateDidChangeListenerHandle?
     var userProfileListener : ListenerRegistration?
     
     init() {
+        firebaseUserId = getFirebaseUserID()
         // Listen to auth handler for Login/Logout/AppLaunch
         // - It will handle user is loggedIn or not
         DispatchQueue.main.async {
@@ -63,6 +65,7 @@ class GlobalObject {
                 setUserLoggedIn(status: false)
                 self.currentUser = nil
                 self.selectedTab = 1
+                self.firebaseUserId = nil
                 removeFirebaseUserID()
             }
         })
@@ -76,6 +79,7 @@ class GlobalObject {
             if let profile = try? snapshot.data(as: ProfileModel.self) {
                 await MainActor.run {
                     self.currentUser = profile
+                    firebaseUserId = self.currentUser?.uid
                     setFirebaseUserID(userId: self.currentUser?.uid ?? "")
                     self.addListnerForUserProfileData()
                 }
@@ -97,6 +101,7 @@ class GlobalObject {
                     Task {
                         @MainActor in
                         self.currentUser = data
+                        self.firebaseUserId = self.currentUser?.uid
                         setFirebaseUserID(userId: self.currentUser?.uid ?? "")
                     }
                 } else {

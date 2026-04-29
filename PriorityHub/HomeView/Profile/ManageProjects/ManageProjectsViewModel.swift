@@ -48,16 +48,20 @@ class ManageProjectsViewModel {
     }
     //MARK: -
     //MARK: - Adding Default Project
-    func addDefaultProject(modelContext: ModelContext,) {
+    func addDefaultProject(modelContext: ModelContext) {
         let descriptor = FetchDescriptor<Project>(predicate:#Predicate{$0.isDefaultProject})
         do {
             let project = try modelContext.fetch(descriptor)
             
             //If not found then we will add one
             if project.isEmpty, let uid = getFirebaseUserID() {
+                
+                let selectedProejctDescriptor = FetchDescriptor<Project>(predicate: #Predicate<Project>{ $0.isProjectSelected })
+                let selectedProject = try modelContext.fetch(selectedProejctDescriptor)
+                
                 let defaultProject = Project.init(name: "Inbox", ownerId: uid)
                 defaultProject.isDefaultProject = true
-                defaultProject.isProjectSelected = true
+                defaultProject.isProjectSelected = selectedProject.isEmpty
                 modelContext.insert(defaultProject)
                 try modelContext.save()
                 Task {

@@ -58,7 +58,11 @@ class TaskViewModel {
     //MARK: - Complete Task 
     func onComplete(modelContext: ModelContext, taskItem: TaskItem){
         taskItem.isCompleted = true
+        taskItem.isSynced = false
         try? modelContext.save()
+        Task {
+            await syncUnsyncFirebase(modelContext: modelContext).uploadAllTasks()
+        }
     }
     //MARK: -
     //MARK: - Perform delete operation for TaskItem

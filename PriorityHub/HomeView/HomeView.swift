@@ -48,8 +48,10 @@ struct HomeView: View {
             .offset(y: -20)
             
         }
-        .task {
-            await viewModel.syncAllDataWithFirebase(modelContext: modelContext)
+        .task(id: globalObject.firebaseUserId) {
+            if let uid = globalObject.firebaseUserId {
+                await viewModel.syncAllDataWithFirebase(modelContext: modelContext, uid: uid)
+            }
         }
         .sheet(isPresented: $viewModel.isShowingAddTask, content: {
             AddTaskView(viewModel: AddTaskViewModel(modelContext: modelContext))

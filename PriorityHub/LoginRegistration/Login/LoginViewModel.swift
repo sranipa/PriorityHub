@@ -47,6 +47,7 @@ class LoginViewModel {
         if isFormValid {
             AlertManager.shared.isShowGlobalLoading = true
             do {
+                let email = email.trimmingCharacters(in: .whitespaces)
                 let authResult = try await Auth.auth().signIn(withEmail: email, password: password)
                 AlertManager.shared.isShowGlobalLoading = false
                 

@@ -12,14 +12,30 @@
 		FE0116EF2F5EA34F009315EC /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = FE0116EE2F5EA34F009315EC /* FirebaseFirestore */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		FEC6901B2FA409C400D7065F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FE01169A2F5A4EC9009315EC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FE0116A12F5A4EC9009315EC;
+			remoteInfo = PriorityHub;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		FE0116A22F5A4EC9009315EC /* PriorityHub.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PriorityHub.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FEC690172FA409C400D7065F /* PriorityHubTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PriorityHubTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		FE0116A42F5A4EC9009315EC /* PriorityHub */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = PriorityHub;
+			sourceTree = "<group>";
+		};
+		FEC690182FA409C400D7065F /* PriorityHubTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = PriorityHubTests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -35,6 +51,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FEC690142FA409C400D7065F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -42,6 +65,7 @@
 			isa = PBXGroup;
 			children = (
 				FE0116A42F5A4EC9009315EC /* PriorityHub */,
+				FEC690182FA409C400D7065F /* PriorityHubTests */,
 				FE0116A32F5A4EC9009315EC /* Products */,
 			);
 			sourceTree = "<group>";
@@ -50,6 +74,7 @@
 			isa = PBXGroup;
 			children = (
 				FE0116A22F5A4EC9009315EC /* PriorityHub.app */,
+				FEC690172FA409C400D7065F /* PriorityHubTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -82,6 +107,29 @@
 			productReference = FE0116A22F5A4EC9009315EC /* PriorityHub.app */;
 			productType = "com.apple.product-type.application";
 		};
+		FEC690162FA409C400D7065F /* PriorityHubTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FEC6901F2FA409C400D7065F /* Build configuration list for PBXNativeTarget "PriorityHubTests" */;
+			buildPhases = (
+				FEC690132FA409C400D7065F /* Sources */,
+				FEC690142FA409C400D7065F /* Frameworks */,
+				FEC690152FA409C400D7065F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FEC6901C2FA409C400D7065F /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				FEC690182FA409C400D7065F /* PriorityHubTests */,
+			);
+			name = PriorityHubTests;
+			packageProductDependencies = (
+			);
+			productName = PriorityHubTests;
+			productReference = FEC690172FA409C400D7065F /* PriorityHubTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -94,6 +142,10 @@
 				TargetAttributes = {
 					FE0116A12F5A4EC9009315EC = {
 						CreatedOnToolsVersion = 26.3;
+					};
+					FEC690162FA409C400D7065F = {
+						CreatedOnToolsVersion = 26.3;
+						TestTargetID = FE0116A12F5A4EC9009315EC;
 					};
 				};
 			};
@@ -115,12 +167,20 @@
 			projectRoot = "";
 			targets = (
 				FE0116A12F5A4EC9009315EC /* PriorityHub */,
+				FEC690162FA409C400D7065F /* PriorityHubTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		FE0116A02F5A4EC9009315EC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FEC690152FA409C400D7065F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -137,7 +197,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FEC690132FA409C400D7065F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		FEC6901C2FA409C400D7065F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FE0116A12F5A4EC9009315EC /* PriorityHub */;
+			targetProxy = FEC6901B2FA409C400D7065F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		FE0116AB2F5A4ECB009315EC /* Debug */ = {
@@ -329,6 +404,48 @@
 			};
 			name = Release;
 		};
+		FEC6901D2FA409C400D7065F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = P3A9VPQAA5;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Self.PriorityHubTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PriorityHub.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PriorityHub";
+			};
+			name = Debug;
+		};
+		FEC6901E2FA409C400D7065F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = P3A9VPQAA5;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Self.PriorityHubTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PriorityHub.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PriorityHub";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -346,6 +463,15 @@
 			buildConfigurations = (
 				FE0116AE2F5A4ECB009315EC /* Debug */,
 				FE0116AF2F5A4ECB009315EC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FEC6901F2FA409C400D7065F /* Build configuration list for PBXNativeTarget "PriorityHubTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FEC6901D2FA409C400D7065F /* Debug */,
+				FEC6901E2FA409C400D7065F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

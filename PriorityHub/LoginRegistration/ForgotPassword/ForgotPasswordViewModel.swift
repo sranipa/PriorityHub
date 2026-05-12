@@ -16,8 +16,14 @@ class ForgotPasswordViewModel {
     // Here we create object for parent class- for pop to root view from navigation stack
     // when resetPassword APT get success response.
     var loginViewModel : LoginViewModel
-    init(loginViewModel: LoginViewModel) {
+    private let authService : authServiceForgotPasswordProtocol
+    private var alertManager : alertManagerProtocol
+    init(loginViewModel: LoginViewModel,
+         authService : authServiceForgotPasswordProtocol = firebaseAuthServices(),
+         alertManager : alertManagerProtocol = AlertManager.shared) {
+        self.authService = authService
         self.loginViewModel = loginViewModel
+        self.alertManager = alertManager
     }
     
     // Keeping encapsulated to model for view
@@ -40,11 +46,11 @@ class ForgotPasswordViewModel {
     // MARK: - API Call
     func resetPassword() async {
         if isValidEmail {
-            AlertManager.shared.isShowGlobalLoading = true
+            alertManager.isShowGlobalLoading = true
             do {
-                try await Auth.auth().sendPasswordReset(withEmail: email)
+                try await self.authService.resetPasswordWithEmail(withEmail: email)
                 resetLinkSent = true
-                AlertManager.shared.isShowGlobalLoading = false
+                alertManager.isShowGlobalLoading = false
             } catch {
                 AlertManager.shared.showAlert(title: String(localized: "ALERT!"), message: loginViewModel.authError(error: error))
             }
@@ -52,6 +58,20 @@ class ForgotPasswordViewModel {
             
         }
     }
+//    func resetPassword() async {
+//        if isValidEmail {
+//            AlertManager.shared.isShowGlobalLoading = true
+//            do {
+//                try await Auth.auth().sendPasswordReset(withEmail: email)
+//                resetLinkSent = true
+//                AlertManager.shared.isShowGlobalLoading = false
+//            } catch {
+//                AlertManager.shared.showAlert(title: String(localized: "ALERT!"), message: loginViewModel.authError(error: error))
+//            }
+//        } else {
+//            
+//        }
+//    }
     func redirectToLoginPage(){
         loginViewModel.path.removeAll()
     }

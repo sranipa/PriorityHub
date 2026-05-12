@@ -8,8 +8,12 @@
 import Foundation
 import SwiftUI
 
+protocol alertManagerProtocol {
+    var isShowGlobalLoading : Bool { get set }
+}
+
 @Observable
-class AlertManager {
+class AlertManager : alertManagerProtocol {
     static let shared = AlertManager()
     
     // Global Loading state

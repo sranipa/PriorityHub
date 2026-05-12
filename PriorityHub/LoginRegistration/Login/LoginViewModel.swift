@@ -18,6 +18,14 @@ class LoginViewModel {
     
     // Private - Encapsulation. Kept model hidden from view
     private var model = LoginModel()
+    private let authService : authServiceLoginProtocol
+    private var alertManager : alertManagerProtocol
+    
+    init(authService: authServiceLoginProtocol = firebaseAuthServices(),
+         alertManager: alertManagerProtocol = AlertManager.shared) {
+        self.authService = authService
+        self.alertManager = alertManager
+    }
     var email : String {
         get { model.email }
         set { model.email = newValue }
@@ -40,16 +48,18 @@ class LoginViewModel {
     var passwordErrorMessage : String? {
         password.isEmpty || password.count >= 6 ? nil : String(localized:"PASSWORD_MUST_BE_AT_LEAST_6_CHARACTERS")
     }
-    
+    var isLoggedIn : Bool = false // For Test Case checking only.
     //MARK: -
     //MARK: - API Call
     func login() async {
         if isFormValid {
-            AlertManager.shared.isShowGlobalLoading = true
+            
+            self.alertManager.isShowGlobalLoading = true
+            
             do {
-                let email = email.trimmingCharacters(in: .whitespaces)
-                let authResult = try await Auth.auth().signIn(withEmail: email, password: password)
-                AlertManager.shared.isShowGlobalLoading = false
+                guard let authResult = try await authService.login(withEmail: email, password: password) else { self.alertManager.isShowGlobalLoading = false; isLoggedIn = true; return }
+                
+                self.alertManager.isShowGlobalLoading = false
                 
                 if authResult.user.isEmailVerified {
                      print("LoggedIn Successfully!")
@@ -64,6 +74,27 @@ class LoginViewModel {
             
         }
     }
+//    func login() async {
+//        if isFormValid {
+//            AlertManager.shared.isShowGlobalLoading = true
+//            do {
+//                let email = email.trimmingCharacters(in: .whitespaces)
+//                let authResult = try await Auth.auth().signIn(withEmail: email, password: password)
+//                AlertManager.shared.isShowGlobalLoading = false
+//                
+//                if authResult.user.isEmailVerified {
+//                     print("LoggedIn Successfully!")
+//                } else {
+//                    AlertManager.shared.showAlert(title: String(localized:"ALERT!"), message:String(localized:"EMAIL_IS_NOT_VERIFIED_PLEASE_VERIFY_YOUR_EMAIL_FIRST"))
+//                }
+//            } catch {
+//                AlertManager.shared.isShowGlobalLoading = false
+//                AlertManager.shared.showAlert(title: String(localized:"ALERT!"), message: authError(error: error))
+//            }
+//        } else {
+//            
+//        }
+//    }
     func authError(error:Error) -> String {
         // Cast Error to NSError for access error code
         let nsError : NSError = error as NSError

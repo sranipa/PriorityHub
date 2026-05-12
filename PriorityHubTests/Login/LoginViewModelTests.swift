@@ -17,7 +17,9 @@ final class LoginViewModelTests : XCTestCase {
     
     override func setUp() {
         super.setUp()
-        viewModel = LoginViewModel()
+        let mockAuthService : authServiceLoginProtocol = MockAuthServices()
+        let mockAlertManager = mockAlertManager()
+        viewModel = LoginViewModel(authService: mockAuthService, alertManager: mockAlertManager)
     }
     override func tearDown() {
         viewModel = nil
@@ -81,5 +83,28 @@ final class LoginViewModelTests : XCTestCase {
         // Assert
         
         XCTAssertEqual(resultMessage, "The email address is invalid")
+    }
+    func test_Login_WithValidDetails() async {
+        // Arrange
+        viewModel.email = "abc.xyz@gmail.com"
+        viewModel.password = "123456"
+        
+        // Act
+        await viewModel.login()
+        
+        // Assert
+        XCTAssertTrue(viewModel.isLoggedIn,"Should be true after api call from mock login")
+    }
+    func test_Login_WithInvalidDetails() async {
+        // Arrange
+        viewModel.email = "abc.xyzgmail.com" // Missing @
+        viewModel.password = "123456"
+        
+        // Act
+        await viewModel.login()
+        
+        // Assert
+        XCTAssertFalse(viewModel.isLoggedIn, "Should be false, Invalid credential will not call login")
+        XCTAssertFalse(viewModel.isFormValid,"Should be false with invalid email")
     }
 }

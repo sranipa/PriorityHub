@@ -15,9 +15,13 @@ import FirebaseFirestore
 class RegistrationViewModel {
     
     var loginViewModel : LoginViewModel
+    var authService : authServiceRegistrationProtocol
+    var alertManager : alertManagerProtocol
     
-    init(loginViewModel: LoginViewModel) {
+    init(loginViewModel: LoginViewModel, authService : authServiceRegistrationProtocol = firebaseAuthServices(), alertManager : alertManagerProtocol = AlertManager.shared) {
         self.loginViewModel = loginViewModel
+        self.authService = authService
+        self.alertManager = alertManager
     }
     
     // Keep model encapsulate for view
@@ -64,6 +68,29 @@ class RegistrationViewModel {
     // MARK: -
     // MARK: -
     func registerUser() async {
+        
+        guard isFormValid else { return }
+        
+        alertManager.isShowGlobalLoading = true
+        
+        do {
+            try await authService.userRegistration(withEmail: email,
+                                                   password: password,
+                                                   firstName: firstName,
+                                                   lastName: lastName)
+            
+            loginViewModel.path.removeAll() // Pop to root view.
+            
+            alertManager.isShowGlobalLoading = false
+            
+            AlertManager.shared.showAlert(title: String(localized:"SUCCESS"), message: String(localized: "THANKS_FOR_REGISTERING_ACCOUNT"))
+        } catch {
+            alertManager.isShowGlobalLoading = false
+            AlertManager.shared.showAlert(title: String(localized:"ALERT!"), message: loginViewModel.authError(error: error))
+        }
+    }
+    /*
+    func registerUser() async {
         if isFormValid {
             AlertManager.shared.isShowGlobalLoading = true
             do {
@@ -92,6 +119,6 @@ class RegistrationViewModel {
         } else {
             print("")
         }
-    }
+    } */
     
 }

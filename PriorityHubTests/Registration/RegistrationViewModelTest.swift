@@ -127,7 +127,24 @@ final class RegistrationViewModelTest: XCTestCase {
         
         // Assert
         XCTAssertTrue(mockAuthService.isUserRegistered, "Should be true after user registation")
-        XCTAssertTrue (viewModel.loginViewModel.path.isEmpty, "Should be empty after user registration")
+        XCTAssertTrue(viewModel.loginViewModel.path.isEmpty, "Should be empty after user registration")
+    }
+    func test_userRegistration_WithAlreadyRegisteredEmail() async {
+        // Arrange
+        viewModel.email = "abc.xyz@gmail.com" //Already this email is registered user
+        viewModel.password = "123456"
+        viewModel.firstName = "Abc"
+        viewModel.lastName = "Xyz"
+        viewModel.confirmPassword = "123456"
+        
+        mockAuthService.isError = true
+        
+        //Act
+        await viewModel.registerUser()
+        
+        //Assert
+        XCTAssertFalse(mockAuthService.isUserRegistered, "Should be false")
+        XCTAssertFalse(viewModel.loginViewModel.path.isEmpty, "Should not be empty, because user is not registered")
     }
     func test_userRegistration_WithInvalidDetails() async {
         // Arrange

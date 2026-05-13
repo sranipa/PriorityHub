@@ -12,6 +12,7 @@ import FirebaseAuth
 class MockAuthServices : authServiceLoginProtocol, authServiceRegistrationProtocol, authServiceForgotPasswordProtocol {
     
     var isUserRegistered : Bool = false
+    var isError : Bool = false
     
     func login(withEmail email: String, password : String) async throws -> FirebaseAuth.AuthDataResult? {
         return nil
@@ -20,8 +21,12 @@ class MockAuthServices : authServiceLoginProtocol, authServiceRegistrationProtoc
         print("Mock ResetPasswordLink Sent To Email")
     }
     func userRegistration(withEmail email: String, password: String, firstName: String, lastName: String) async throws {
-        isUserRegistered = true
-        print("Registration Successfully")
+        if isError {
+            throw NSError(domain: "Auth", code: 17007)
+        } else {
+            isUserRegistered = true
+            print("Registration Successfully")
+        }
     }
 }
 // Mock Test Class

@@ -67,12 +67,12 @@ struct TaskView: View {
             ForEach(viewModel.getGroupedTask(tasks: tasks), id: \.header) { group in
                 Section {
                     ForEach(group.tasks) { task in
-                        getRowView(task: task)
+                        getRowView(task: task, header: group.header)
                     }
                 } header: {
                     Text(group.header)
                         .font(.subheadline)
-                        .foregroundStyle(Color.secondary)
+                        .foregroundStyle(group.header == CONSTANT.OVERDUE ? Color.red : Color.secondary)
                 }
             }
         }.listStyle(.insetGrouped)
@@ -80,7 +80,7 @@ struct TaskView: View {
     //MARK: -
     //MARK: - Design For Row
     @ViewBuilder
-    func getRowView(task:TaskItem) -> some View {
+    func getRowView(task:TaskItem, header: String) -> some View {
         VStack(spacing:3){
             HStack {
                 Text(task.title)
@@ -107,6 +107,15 @@ struct TaskView: View {
                 HStack {
                     Text(String(localized: "DUE_DATE") + " : " + getDate(date: task.dueDate))
                         .font(.caption2)
+                        .foregroundStyle(task.dueDate < Calendar.current.startOfDay(for: .now) ? .red : .primary)
+                    
+                    Spacer()
+                }
+            } else if header == CONSTANT.OVERDUE {
+                HStack {
+                    Text(String(localized: "DUE_DATE_WAS") + " : " + getDate(date: task.dueDate))
+                        .font(.caption2)
+                        .foregroundStyle(.red)
                     
                     Spacer()
                 }

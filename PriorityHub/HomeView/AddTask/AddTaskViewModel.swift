@@ -24,6 +24,9 @@ class AddTaskViewModel {
             self.dueDate = editTaskItem?.dueDate ?? .now
             self.priorityLevel = PriorityLevel(rawValue: editTaskItem?.priorityLevel ?? 1) ?? .medium
             self.selectedProject = editTaskItem?.project
+            if self.dueDate < Calendar.current.startOfDay(for: .now) {
+                self.dueDate = .now
+            }
         }
     }
     var HeaderTitle : String {

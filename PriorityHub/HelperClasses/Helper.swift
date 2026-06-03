@@ -23,6 +23,7 @@ struct PARAMS {
 //MARK: - Cosntant
 struct CONSTANT {
     static let IS_DARK_MODE : String = "isDarkMode"
+    static let OVERDUE : String = "Overdue"
 }
 
 

@@ -30,12 +30,30 @@ class TaskViewModel {
         
         switch sortOption {
         case .dueDate:
-            let dict = Dictionary(grouping: filteredTasks) { item in
+            // Get all over due tasks
+            let overDueTasks = filteredTasks.filter { task in
+                task.dueDate < Calendar.current.startOfDay(for: .now)
+            }
+            
+            // get all task which in not overdue
+            let AllOtherTasks = filteredTasks.filter { task in
+                task.dueDate >= Calendar.current.startOfDay(for: .now)
+            }
+            
+            // Grouping & Sorting of all not overdue tasks
+            let dict = Dictionary(grouping: AllOtherTasks) { item in
                 Calendar.current.startOfDay(for: item.dueDate)
             }
-            return dict.sorted { item1, item2 in
+            var groupedSection = dict.sorted { item1, item2 in
                 item1.key < item2.key
             }.map { (header: getDate(date: $0.key), tasks: $0.value) }
+            
+            // Adding overdue task at first
+            if !overDueTasks.isEmpty {
+                groupedSection.insert((header:CONSTANT.OVERDUE, tasks:overDueTasks), at: 0)
+            }
+            
+            return groupedSection
             
             
         case .priority:

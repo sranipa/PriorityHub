@@ -194,6 +194,17 @@
         }
       }
     },
+    "DUE_DATE_WAS" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Due Was"
+          }
+        }
+      }
+    },
     "EDIT" : {
       "localizations" : {
         "en" : {

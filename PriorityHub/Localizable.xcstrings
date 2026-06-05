@@ -4,6 +4,9 @@
     ".%@" : {
 
     },
+    "%lld" : {
+
+    },
     "ACCOUNT" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -111,6 +114,19 @@
         }
       }
     },
+    "Completed Task" : {
+
+    },
+    "COMPLETED_ASSIGNMENT_OVER_THE_PAST_SEVEN_DAYS" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completed assignment over the past 7 days"
+          }
+        }
+      }
+    },
     "CONFIRM_PASSWORD" : {
       "localizations" : {
         "en" : {
@@ -151,7 +167,7 @@
         }
       }
     },
-    "Dashboard View" : {
+    "Day" : {
 
     },
     "DEFAULT_PROJECT_MESSAGE" : {
@@ -504,6 +520,16 @@
         }
       }
     },
+    "PRODUCTIVITY_VELOCITY" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Productivity Velocity"
+          }
+        }
+      }
+    },
     "PROFILE" : {
       "localizations" : {
         "en" : {
@@ -540,6 +566,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Register Here"
+          }
+        }
+      }
+    },
+    "REMAINING_TASKS_DUE_TODAY" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remaining Tasks Due Today"
           }
         }
       }
@@ -676,6 +712,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Today"
+          }
+        }
+      }
+    },
+    "TODAY_OVERVIEW" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today’s Overview"
           }
         }
       }

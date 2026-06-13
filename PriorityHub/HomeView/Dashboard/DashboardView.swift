@@ -51,6 +51,7 @@ struct DashboardView: View {
                 Chart(viewModel.getLastSevenDaysData(allTasks: tasks)) { dayData in
                     BarMark(x:.value("Day", dayData.day), y: .value("Completed Task", dayData.count))
                         .cornerRadius(5)
+                        .foregroundStyle(.blue.gradient)
                 }
                 .chartYAxis(content: {
                     AxisMarks(position: .leading)

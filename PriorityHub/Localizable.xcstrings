@@ -7,6 +7,9 @@
     "%lld" : {
 
     },
+    "%lld Tasks" : {
+
+    },
     "ACCOUNT" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -127,6 +130,9 @@
         }
       }
     },
+    "completedAt" : {
+
+    },
     "CONFIRM_PASSWORD" : {
       "localizations" : {
         "en" : {
@@ -136,6 +142,9 @@
           }
         }
       }
+    },
+    "count" : {
+
     },
     "CREATE_YOUR_FIRST_TASK" : {
       "localizations" : {
@@ -327,9 +336,6 @@
           }
         }
       }
-    },
-    "Insights View" : {
-
     },
     "Key" : {
       "extractionState" : "manual"
@@ -743,6 +749,19 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Update Task"
+          }
+        }
+      }
+    },
+    "vs %lld last week" : {
+
+    },
+    "WEEKLY_PROGRESS" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekly Progress"
           }
         }
       }

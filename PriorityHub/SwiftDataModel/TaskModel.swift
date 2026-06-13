@@ -19,6 +19,7 @@ final class TaskItem {
     var isSynced : Bool
     var ownerId : String
     var isTaskDelete : Bool
+    var completedAt : Date?
     
     // The relationship back to the Project
     var project : Project?
@@ -39,6 +40,7 @@ final class TaskItem {
         self.isSynced = false
         self.ownerId = ownerId
         self.isTaskDelete = false
+        self.completedAt = nil
     }
 }
 // Here we create TaskTansferModel for transfer SwiftData model to Firebase.
@@ -58,4 +60,5 @@ struct TaskTansferModel : Sendable {
     var isCompleted : Bool
     var ownerId : String
     var projectId : String
+    var completedAt : Date?
 }

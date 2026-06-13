@@ -30,6 +30,7 @@ final actor firebaseServices : Sendable {
         case projectColor = "projectColor"
         case defaultProject = "isDefaultProject"
         case isProjectSelected = "isProjectSelected"
+        case completedAt = "completedAt"
     }
     let collectionTask: String = "tasks"
     let userTasks: String = "userTasks"
@@ -47,7 +48,8 @@ final actor firebaseServices : Sendable {
                                          firebaseKeys.priorityLevel.rawValue : taskModel.priorityLevel,
                                          firebaseKeys.isCompleted.rawValue : taskModel.isCompleted,
                                          firebaseKeys.ownerId.rawValue : taskModel.ownerId,
-                                         firebaseKeys.projectId.rawValue : taskModel.projectId]
+                                         firebaseKeys.projectId.rawValue : taskModel.projectId,
+                                         firebaseKeys.completedAt.rawValue : taskModel.completedAt ?? ""]
         
         try await db.collection(collectionTask)
             .document(taskModel.ownerId)
@@ -100,7 +102,9 @@ final actor firebaseServices : Sendable {
                                                 priorityLevel: data[firebaseKeys.priorityLevel.rawValue] as? Int ?? 1,
                                                 isCompleted: data[firebaseKeys.isCompleted.rawValue] as? Bool ?? false,
                                                 ownerId: data[firebaseKeys.ownerId.rawValue] as? String ?? "",
-                                                projectId: data[firebaseKeys.projectId.rawValue] as? String ?? "")
+                                                projectId: data[firebaseKeys.projectId.rawValue] as? String ?? "",
+                                                completedAt: data[firebaseKeys.completedAt.rawValue] as? Date)
+                        
                     })
                     continuation.yield(taskItems)
                 }
@@ -195,7 +199,8 @@ class syncUnsyncFirebase {
                                                  priorityLevel: taskItem.priorityLevel,
                                                  isCompleted: taskItem.isCompleted,
                                                  ownerId: taskItem.ownerId,
-                                                 projectId: taskItem.project?.id.uuidString ?? "")
+                                                 projectId: taskItem.project?.id.uuidString ?? "",
+                                                 completedAt: taskItem.completedAt)
                 
                 group.addTask {
                     try await self.firebaseService.uploadTask(taskModel: taskModel)
@@ -288,6 +293,9 @@ class syncUnsyncFirebase {
                         task.dueDate = remoteTask.dueDate
                         task.priorityLevel = remoteTask.priorityLevel
                         task.isCompleted = remoteTask.isCompleted
+                        if let completedAt = remoteTask.completedAt {
+                            task.completedAt = completedAt
+                        }
                         if task.project == nil && !remoteTask.projectId.isEmpty {
                             task.project = fetchProject(projectId: remoteTask.projectId)
                         } else if let projectId = task.project?.id.uuidString {
@@ -306,6 +314,7 @@ class syncUnsyncFirebase {
                                            ownerId: userId)
                     newTask.isSynced = true
                     newTask.isCompleted = remoteTask.isCompleted
+                    newTask.completedAt = remoteTask.completedAt
                     newTask.project = fetchProject(projectId: remoteTask.projectId)
                     
                     modelContext.insert(newTask)

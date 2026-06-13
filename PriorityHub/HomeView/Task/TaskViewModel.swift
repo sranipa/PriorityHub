@@ -76,6 +76,7 @@ class TaskViewModel {
     //MARK: - Complete Task 
     func onComplete(modelContext: ModelContext, taskItem: TaskItem){
         taskItem.isCompleted = true
+        taskItem.completedAt = .now
         taskItem.isSynced = false
         try? modelContext.save()
         Task {
